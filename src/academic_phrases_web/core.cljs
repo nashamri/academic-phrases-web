@@ -1934,16 +1934,13 @@
         sentence (-> split-tmp
                      (->> (map (fn [i] [:span i])))
                      (interleave select))]
-    sentence))
+     sentence))
 
 (defn root-html []
   [:div
-   [:h1 (:choice1 @app-state)]
-   [:h1 (:choice2 @app-state)]
-   [:h1 (:choice3 @app-state)]
    (dyn-sent 284)
-   [:h1.animated {:class (if (:show-sentence? @app-state) "fadeIn" "fadeOut")} (replace-placeholder)]
-   [:button.btn.btn-primary {:on-click #(swap! app-state update :show-sentence? not)} "toggle"]
+   [:h1 {:class (if (:show-sentence? @app-state) "fade-in" "fade-out")} (replace-placeholder)]
+   [:button.siimple-btn.siimple-btn--blue {:on-click #(swap! app-state update :show-sentence? not)} "toggle"]
    [:h1 (str (:show-sentence? @app-state))]
    ]
   )
