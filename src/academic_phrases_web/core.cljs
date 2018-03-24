@@ -1915,22 +1915,37 @@
 (defn get-item-by-id [id]
   (S/select-one (S/walker #(= (:id %) id)) all-phrases))
 
+(defn gen-options-group [idx choices]
+  [:select {:on-click #(swap! app-state assoc-in [(keyword (str "choice" (str (inc idx))))] (-> % .-target .-value))}
+   (for [choice choices]
+     [:option choice])])
+
+(defn select-html [id]
+  (let [chs (:choices (get-item-by-id id))]
+     (map-indexed gen-options-group chs)))
+
 (defn dyn-sent [id]
   (let [item (get-item-by-id id)
-        temp (:template item)]
-      [:div
-       [:span temp]]))
+        template (:template item)
+        split-tmp (s/split template #"\[\{1\}\]|\[\{2\}\]|\[\{3\}\]")
+        choices (:choices item)
+        select (concat (select-html id) " ")
+        sentence (-> split-tmp
+                     (->> (map (fn [i] [:span i])))
+                     (interleave select))]
+    sentence))
 
-(defn sentence-html []
+
+(defn root-html []
   [:div
-   [:span "Before interpreting our results, we "]
-   [:select {:on-click #(swap! app-state assoc-in [:choice1] (-> % .-target .-value))}
-             [:option "remind the reader of"][:option "would just like to restate"]]
-   [:span " our main aims."]
-   [:h1 (replace-placeholder)]
-   (dyn-sent 22)])
+   [:h1 (:template @app-state)]
+   [:h1 (:choice1 @app-state)]
+   [:h1 (:choice2 @app-state)]
+   [:h1 (:choice3 @app-state)]
+    (dyn-sent 284)])
 
-(reagent/render-component [sentence-html]
+
+(reagent/render-component [root-html]
                           (. js/document (getElementById "app")))
 
 (defn on-js-reload []
