@@ -10,7 +10,8 @@
                           :choice1 ""
                           :choice2 ""
                           :choice3 ""
-                          :sentence ""}))
+                          :sentence ""
+                          :show-sentence? false}))
 
 (def all-phrases
   {:cat1 {:title "Establishing why your topic X is important"
@@ -1935,14 +1936,17 @@
                      (interleave select))]
     sentence))
 
-
 (defn root-html []
   [:div
-   [:h1 (:template @app-state)]
    [:h1 (:choice1 @app-state)]
    [:h1 (:choice2 @app-state)]
    [:h1 (:choice3 @app-state)]
-    (dyn-sent 284)])
+   (dyn-sent 284)
+   [:h1.animated {:class (if (:show-sentence? @app-state) "fadeIn" "fadeOut")} (replace-placeholder)]
+   [:button.btn.btn-primary {:on-click #(swap! app-state update :show-sentence? not)} "toggle"]
+   [:h1 (str (:show-sentence? @app-state))]
+   ]
+  )
 
 
 (reagent/render-component [root-html]
