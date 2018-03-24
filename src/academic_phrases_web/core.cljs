@@ -1,6 +1,7 @@
 (ns academic-phrases-web.core
   (:require [reagent.core :as reagent :refer [atom]]
-            [clojure.string :as s]))
+            [clojure.string :as s]
+            [com.rpl.specter :as S :refer-macros [select select-one ALL]]))
 
 
 (enable-console-print!)
@@ -8,9 +9,10 @@
 (defonce app-state (atom {:template "Before [{2}] interpreting our results, we [{1}] our main aims [{3}]."
                           :choice1 ""
                           :choice2 ""
-                          :choice3 ""}))
+                          :choice3 ""
+                          :sentence ""}))
 
-(def academic-phrases--all-phrases
+(def all-phrases
   {:cat1 {:title "Establishing why your topic X is important"
           :items [
                   {:id 1
@@ -1902,7 +1904,6 @@
                     :template "More details on this topic can be found in [Ref]."
                     :choices [[]]}]}})
 
-
 (defn replace-placeholder []
   (let [tmp (:template @app-state)
         ch1 (:choice1 @app-state)
@@ -1911,13 +1912,23 @@
     (s/replace tmp #"\[\{1\}\]|\[\{2\}\]|\[\{3\}\]"
                {"[{1}]" ch1 "[{2}]" ch2 "[{3}]" ch3})))
 
+(defn get-item-by-id [id]
+  (S/select-one (S/walker #(= (:id %) id)) all-phrases))
+
+(defn dyn-sent [id]
+  (let [item (get-item-by-id id)
+        temp (:template item)]
+      [:div
+       [:span temp]]))
+
 (defn sentence-html []
   [:div
    [:span "Before interpreting our results, we "]
    [:select {:on-click #(swap! app-state assoc-in [:choice1] (-> % .-target .-value))}
              [:option "remind the reader of"][:option "would just like to restate"]]
    [:span " our main aims."]
-   [:h1 (replace-placeholder)]])
+   [:h1 (replace-placeholder)]
+   (dyn-sent 22)])
 
 (reagent/render-component [sentence-html]
                           (. js/document (getElementById "app")))
