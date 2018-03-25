@@ -1,7 +1,7 @@
 (ns academic-phrases-web.core
   (:require [reagent.core :as reagent :refer [atom]]
             [clojure.string :as s]
-            [com.rpl.specter :as S :refer-macros [select select-one ALL]]))
+            [com.rpl.specter :as S :refer-macros [select select-one ALL MAP-VALS]]))
 
 
 (enable-console-print!)
@@ -11,7 +11,8 @@
                           :choice2 ""
                           :choice3 ""
                           :sentence ""
-                          :show-sentence? false}))
+                          :show-sentence? false
+                          :topics []}))
 
 (def all-phrases
   {:cat1 {:title "Establishing why your topic X is important"
@@ -1921,9 +1922,15 @@
    (for [choice choices]
      [:option choice])])
 
+(defn get-all-titles []
+  (S/select [S/MAP-VALS :title] all-phrases))
+
+(defn update-topics! [titles]
+  (swap! app-state assoc :topics titles))
+
 (defn select-html [id]
   (let [chs (:choices (get-item-by-id id))]
-     (map-indexed gen-options-group chs)))
+    (map-indexed gen-options-group chs)))
 
 (defn dyn-sent [id]
   (let [item (get-item-by-id id)
@@ -1934,23 +1941,33 @@
         sentence (-> split-tmp
                      (->> (map (fn [i] [:span i])))
                      (interleave select))]
-     sentence))
+    sentence))
 
 (defn root-html []
-  [:div
+  [:div.animated.fadeIn
    (dyn-sent 284)
    [:h1 {:class (if (:show-sentence? @app-state) "fade-in" "fade-out")} (replace-placeholder)]
    [:button.siimple-btn.siimple-btn--blue {:on-click #(swap! app-state update :show-sentence? not)} "toggle"]
    [:h1 (str (:show-sentence? @app-state))]
-   ]
-  )
+   [:button.siimple-btn.siimple-btn--blue
+    {:on-click #(reagent/render-component [entry-html] (. js/document (getElementById "app")))} "Swap!"]
+   ])
 
+(defn entry-html []
+  [:div.animated.fadeIn
+   [:button.siimple-btn.siimple-btn--blue {:on-click #(update-topics! (get-all-titles))} "Topics"]
+   [:button.siimple-btn.siimple-btn--blue
+    {:on-click #(reagent/render-component [root-html] (. js/document (getElementById "app")))} "Swap!"]
+   [:hr]
+   (take 10 (map (fn [t] ^{:key t}[:p.animated.fadeInUp t]) (:topics @app-state)))
+   ;; [:h4 (str (:topics @app-state))]
+   ])
 
-(reagent/render-component [root-html]
+(reagent/render-component [entry-html]
                           (. js/document (getElementById "app")))
 
 (defn on-js-reload []
   ;; optionally touch your app-state to force rerendering depending on
   ;; your application
   ;; (swap! app-state update-in [:__figwheel_counter] inc)
-)
+  )

@@ -78,7 +78,7 @@
              ;; :open-file-command "myfile-opener"
 
              ;; if you are using emacsclient you can just use
-             ;; :open-file-command "emacsclient"
+             :open-file-command "emacsclient-one-frame"
 
              ;; if you want to disable the REPL
              ;; :repl false
