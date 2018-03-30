@@ -7,12 +7,11 @@
 
 (enable-console-print!)
 
-(defonce app-state (atom {:template "Before [{2}] interpreting our results, we [{1}] our main aims [{3}]."
+(defonce app-state (atom {:template "First we [{1}] the value of X [{2}], we [{3}] Y."
                           :choice1 ""
                           :choice2 ""
                           :choice3 ""
                           :sentence ""
-                          :show-sentence? false
                           :topics []}))
 
 
@@ -53,27 +52,32 @@
                      (interleave select))]
     sentence))
 
-(defn root-html []
+(defn sent-ui []
   [:div.animated.fadeIn
    (dyn-sent 284)
-   [:h1 {:class (if (:show-sentence? @app-state) "fade-in" "fade-out")} (replace-placeholder)]
-   [:button.siimple-btn.siimple-btn--blue {:on-click #(swap! app-state update :show-sentence? not)} "toggle"]
-   [:h1 (str (:show-sentence? @app-state))]
-   [:button.siimple-btn.siimple-btn--blue
-    {:on-click #(reagent/render-component [entry-html] (. js/document (getElementById "app")))} "Swap!"]
+   [:h1.animated.fadeIn (replace-placeholder)]
    ])
 
-(defn entry-html []
+(defn topics-ui []
   [:div.animated.fadeIn
-   [:button.siimple-btn.siimple-btn--blue {:on-click #(update-topics! (get-all-titles))} "Topics"]
-   [:button.siimple-btn.siimple-btn--blue
-    {:on-click #(reagent/render-component [root-html] (. js/document (getElementById "app")))} "Swap!"]
-   [:hr]
+   [:button.siimple-btn.siimple-btn--blue {:on-click #(update-topics! (get-all-titles))} "All Topics"]
+   [:button.siimple-btn.siimple-btn--blue {:on-click #(swap! app-state assoc :topics [])} "Clear Topics"]
    (take 10 (map (fn [t] ^{:key t}[:p.animated.fadeInUp t]) (:topics @app-state)))
-   ;; [:h4 (str (:topics @app-state))]
    ])
 
-(reagent/render-component [entry-html]
+(defn mount-component [comp]
+  (reagent/render-component [comp] (. js/document (getElementById "main-body"))))
+
+(defn main-ui []
+  [:div
+   [:button.siimple-btn.siimple-btn--blue {:on-click #(mount-component topics-ui)} "topics"]
+   [:button.siimple-btn.siimple-btn--blue {:on-click #(mount-component sent-ui)} "sentences"]
+   [:hr]
+   [:div#main-body]
+   ;; [:p (str (:topics @app-state))]
+   ])
+
+(reagent/render-component [main-ui]
                           (. js/document (getElementById "app")))
 
 (defn on-js-reload []
