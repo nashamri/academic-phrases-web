@@ -62,7 +62,12 @@
   [:div.animated.fadeIn
    [:button.siimple-btn.siimple-btn--blue {:on-click #(update-topics! (get-all-titles))} "All Topics"]
    [:button.siimple-btn.siimple-btn--blue {:on-click #(swap! app-state assoc :topics [])} "Clear Topics"]
-   (take 10 (map (fn [t] ^{:key t}[:p.animated.fadeInUp t]) (:topics @app-state)))
+   [:input {:placeholder "Search"
+            :on-change (fn [e] (swap! app-state assoc :topics
+                                      (into [] (filter (fn [t]
+                                                         (s/includes? (s/lower-case t) (-> e .-target .-value)))
+                                                       (get-all-titles)))))}]
+   [:div (map (fn [t] ^{:key t}[:p t]) (:topics @app-state))]
    ])
 
 (defn mount-component [comp]
