@@ -60,6 +60,9 @@
                      (interleave select))]
     sentence))
 
+(defn mount-component [comp]
+  (reagent/render-component [comp] (. js/document (getElementById "main-body"))))
+
 (defn sent-ui []
   [:div.animated.fadeIn
    (dyn-sent (:sentence-id @app-state))
@@ -94,22 +97,22 @@
 (defn topics-ui []
   [:div.animated.fadeIn
    [:button.siimple-btn.siimple-btn--blue {:on-click #(update-topics! (get-all-titles))} "All Topics"]
-   [:button.siimple-btn.siimple-btn--blue {:on-click #(swap! app-state assoc :topics [])} "Clear Topics"]
+   [:button.siimple-btn.siimple-btn--blue {:on-click #(do
+                                                        (swap! app-state assoc :topics [])
+                                                        (swap! app-state assoc :topic-title ""))} "Clear Topics"]
    [:input {:placeholder "Search"
             :on-change (fn [e] (swap! app-state assoc :topics
                                       (into [] (filter (fn [t]
                                                          (s/includes? (s/lower-case t) (-> e .-target .-value)))
                                                        (get-all-titles)))))}]
-   [:div (map (fn [t] ^{:key t}[topic-card t]) (:topics @app-state))]
-   ])
-
-(defn mount-component [comp]
-  (reagent/render-component [comp] (. js/document (getElementById "main-body"))))
+   [:div (map (fn [t] ^{:key t}[topic-card t]) (:topics @app-state))]])
 
 (defn main-ui []
   [:div
    [:button.siimple-btn.siimple-btn--blue {:on-click #(mount-component topics-ui)} "topics"]
-   [:button.siimple-btn.siimple-btn--blue {:on-click #(mount-component topic-ui)} "topic"]
+   [:button.siimple-btn.siimple-btn--blue {:on-click #(mount-component topic-ui)
+                                           :class (if (empty? (:topic-title @app-state)) "siimple-btn--disabled" "siimple-btn--blue")}
+    "topic"]
    [:hr]
    [:div#main-body]
    ;; [:hr]
