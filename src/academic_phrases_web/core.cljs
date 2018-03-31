@@ -2,7 +2,7 @@
   (:require [academic-phrases-web.phrases :refer [all-phrases]]
             [reagent.core :as reagent :refer [atom]]
             [clojure.string :as s]
-            [com.rpl.specter :as S :refer-macros [select select-one ALL MAP-VALS]]))
+            [com.rpl.specter :as S :refer-macros [select select-one ALL MAP-VALS collect]]))
 
 
 (enable-console-print!)
@@ -11,8 +11,9 @@
                           :choice1 ""
                           :choice2 ""
                           :choice3 ""
-                          :sentence ""
-                          :topics []}))
+                          :sentence-id 0
+                          :topics []
+                          :topic-title ""}))
 
 
 (defn replace-placeholder []
@@ -34,6 +35,13 @@
 (defn get-all-titles []
   (S/select [S/MAP-VALS :title] all-phrases))
 
+(defn get-topic-titles [topic-id]
+  (S/select [(keyword (str "cat" topic-id)) :items] all-phrases))
+
+(defn get-items-by-title [title]
+  (S/select [(S/walker #(= (:title %) title)) :items S/ALL] all-phrases))
+
+
 (defn update-topics! [titles]
   (swap! app-state assoc :topics titles))
 
@@ -54,9 +62,33 @@
 
 (defn sent-ui []
   [:div.animated.fadeIn
-   (dyn-sent 284)
+   (dyn-sent (:sentence-id @app-state))
    [:h1.animated.fadeIn (replace-placeholder)]
    ])
+
+(defn topic-card [topic]
+  [:div.siimple-tip topic
+   [:button.siimple-btn.siimple-btn--purple
+    {:on-click #(do
+                  (swap! app-state assoc :topic-title topic)
+                  (mount-component topic-ui))} "Go"]])
+
+(defn sent-card [sent]
+  [:div.siimple-tip (s/replace (:template sent) #"\[\{1\}\]|\[\{2\}\]|\[\{3\}\]" "__")
+   [:button.siimple-btn.siimple-btn--purple
+    {:on-click #(do
+                  (swap! app-state assoc :sentence-id (:id sent))
+                  (mount-component sent-ui))} "Go"]])
+
+(defn topic-ui []
+  (let [title (:topic-title @app-state)]
+    (fn []
+      [:div.animated.fadeIn
+       [:h3 title]
+       (map
+        (fn [t]
+          (sent-card t))
+        (get-items-by-title title))])))
 
 (defn topics-ui []
   [:div.animated.fadeIn
@@ -67,7 +99,7 @@
                                       (into [] (filter (fn [t]
                                                          (s/includes? (s/lower-case t) (-> e .-target .-value)))
                                                        (get-all-titles)))))}]
-   [:div (map (fn [t] ^{:key t}[:p t]) (:topics @app-state))]
+   [:div (map (fn [t] ^{:key t}[topic-card t]) (:topics @app-state))]
    ])
 
 (defn mount-component [comp]
@@ -76,10 +108,11 @@
 (defn main-ui []
   [:div
    [:button.siimple-btn.siimple-btn--blue {:on-click #(mount-component topics-ui)} "topics"]
-   [:button.siimple-btn.siimple-btn--blue {:on-click #(mount-component sent-ui)} "sentences"]
+   [:button.siimple-btn.siimple-btn--blue {:on-click #(mount-component topic-ui)} "topic"]
    [:hr]
    [:div#main-body]
-   ;; [:p (str (:topics @app-state))]
+   ;; [:hr]
+   ;; [:p (str (:topic-title @app-state))]
    ])
 
 (reagent/render-component [main-ui]
