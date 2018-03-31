@@ -63,18 +63,17 @@
 (defn mount-component [comp]
   (reagent/render-component [comp] (. js/document (getElementById "main-body"))))
 
+(defn reset-choices []
+  (do
+    (swap! app-state assoc :choice1 "")
+    (swap! app-state assoc :choice2 "")
+    (swap! app-state assoc :choice3 "")))
+
 (defn sent-ui []
   [:div.animated.fadeIn
    (dyn-sent (:sentence-id @app-state))
    [:h1.animated.fadeIn (replace-placeholder)]
    ])
-
-(defn topic-card [topic]
-  [:div.siimple-tip topic
-   [:button.siimple-btn.siimple-btn--purple
-    {:on-click #(do
-                  (swap! app-state assoc :topic-title topic)
-                  (mount-component topic-ui))} "Go"]])
 
 (defn sent-card [sent]
   [:div.siimple-tip (s/replace (:template sent) #"\[\{1\}\]|\[\{2\}\]|\[\{3\}\]" "__")
@@ -82,6 +81,7 @@
     {:on-click #(do
                   (swap! app-state assoc :sentence-id (:id sent))
                   (swap! app-state assoc :template (:template sent))
+                  (reset-choices)
                   (mount-component sent-ui))} "Go"]])
 
 (defn topic-ui []
@@ -93,6 +93,14 @@
         (fn [t]
           (sent-card t))
         (get-items-by-title title))])))
+
+(defn topic-card [topic]
+  [:div.siimple-tip topic
+   [:button.siimple-btn.siimple-btn--purple
+    {:on-click #(do
+                  (swap! app-state assoc :topic-title topic)
+                  (mount-component topic-ui))} "Go"]])
+
 
 (defn topics-ui []
   [:div.animated.fadeIn
