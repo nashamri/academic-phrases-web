@@ -7,7 +7,7 @@
 
 (enable-console-print!)
 
-(defonce app-state (atom {:template "First we [{1}] the value of X [{2}], we [{3}] Y."
+(defonce app-state (atom {:template ""
                           :choice1 ""
                           :choice2 ""
                           :choice3 ""
@@ -78,6 +78,7 @@
    [:button.siimple-btn.siimple-btn--purple
     {:on-click #(do
                   (swap! app-state assoc :sentence-id (:id sent))
+                  (swap! app-state assoc :template (:template sent))
                   (mount-component sent-ui))} "Go"]])
 
 (defn topic-ui []
