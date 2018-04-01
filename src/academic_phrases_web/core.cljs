@@ -75,14 +75,23 @@
    [:h1.animated.fadeIn (replace-placeholder)]
    ])
 
+(defn mark-placeholders [sent]
+  (interpose [:mark "__"] (s/split sent #"__")))
+
 (defn sent-card [sent]
-  [:div.siimple-tip (s/replace (:template sent) #"\[\{1\}\]|\[\{2\}\]|\[\{3\}\]" "__")
-   [:button.siimple-btn.siimple-btn--purple
-    {:on-click #(do
-                  (swap! app-state assoc :sentence-id (:id sent))
-                  (swap! app-state assoc :template (:template sent))
-                  (reset-choices)
-                  (mount-component sent-ui))} "Go"]])
+  [:table.table
+   [:tbody
+    [:tr
+     [:td (mark-placeholders (s/replace (:template sent) #"\[\{1\}\]|\[\{2\}\]|\[\{3\}\]" "__"))]
+     [:td
+      [:button.btn.btn-primary.float-right
+       {:on-click #(do
+                     (swap! app-state assoc :sentence-id (:id sent))
+                     (swap! app-state assoc :template (:template sent))
+                     (reset-choices)
+                     (mount-component sent-ui))} [:i.icon.icon-forward]]
+      ]]]
+   ])
 
 (defn topic-ui []
   (let [title (:topic-title @app-state)]
@@ -95,20 +104,26 @@
         (get-items-by-title title))])))
 
 (defn topic-card [topic]
-  [:div.siimple-tip topic
-   [:button.siimple-btn.siimple-btn--purple
-    {:on-click #(do
-                  (swap! app-state assoc :topic-title topic)
-                  (mount-component topic-ui))} "Go"]])
+  [:table.table
+   [:tbody
+    [:tr
+     [:td [:strong topic]]
+     [:td
+      [:button.btn.btn-primary.float-right
+       {:on-click #(do
+                     (swap! app-state assoc :topic-title topic)
+                     (mount-component topic-ui))} [:i.icon.icon-forward]]
+      ]]]
+   ])
 
 
 (defn topics-ui []
   [:div.animated.fadeIn
-   [:button.siimple-btn.siimple-btn--blue {:on-click #(update-topics! (get-all-titles))} "All Topics"]
-   [:button.siimple-btn.siimple-btn--blue {:on-click #(do
-                                                        (swap! app-state assoc :topics [])
-                                                        (swap! app-state assoc :topic-title ""))} "Clear Topics"]
-   [:input {:placeholder "Search"
+   [:button.btn.btn-primary {:on-click #(update-topics! (get-all-titles))} "All Topics"]
+   [:button.btn.btn-primary {:on-click #(do
+                                          (swap! app-state assoc :topics [])
+                                          (swap! app-state assoc :topic-title ""))} "Clear Topics"]
+   [:input {:placeholder "Search" :class "form-input" :type "text"
             :on-change (fn [e] (swap! app-state assoc :topics
                                       (into [] (filter (fn [t]
                                                          (s/includes? (s/lower-case t) (-> e .-target .-value)))
@@ -116,12 +131,15 @@
    [:div (map (fn [t] ^{:key t}[topic-card t]) (:topics @app-state))]])
 
 (defn main-ui []
-  [:div
-   [:button.siimple-btn.siimple-btn--blue {:on-click #(mount-component topics-ui)} "topics"]
-   [:button.siimple-btn.siimple-btn--blue {:on-click #(mount-component topic-ui)
-                                           :class (if (empty? (:topic-title @app-state)) "siimple-btn--disabled" "siimple-btn--blue")}
-    "topic"]
+  [:div.container
+   [:div.columns
+    [:button.btn.btn-primary {:on-click #(mount-component topics-ui)} "topics"]
+    [:button.btn.btn-primary {:on-click #(mount-component topic-ui)
+                              :class (if (empty? (:topic-title @app-state)) "disabled" "btn-primary")}
+     "topic"]
+    ]
    [:hr]
+
    [:div#main-body]
    ;; [:hr]
    ;; [:p (str (:topic-title @app-state))]
