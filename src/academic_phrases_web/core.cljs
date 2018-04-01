@@ -91,6 +91,7 @@
   [:div.animated.fadeIn
    (dyn-sent (:sentence-id @app-state))
    [:h1.animated.fadeIn {:id "copy-this"} (replace-placeholder)]
+   [clipboard-button "Copy" "#copy-this"]
    ])
 
 (defn mark-placeholders [sent]
@@ -163,7 +164,6 @@
    ;; [:hr]
    ;; [:p (str (:topic-title @app-state))]
    ;; [:div {:id "copy-this"} "Testing"]
-   [clipboard-button "Copy" "#copy-this"]
    ])
 
 (reagent/render-component [main-ui]
