@@ -120,7 +120,8 @@
 (defn topics-ui []
   [:div.animated.fadeIn
    [:button.btn.btn-primary {:on-click #(update-topics! (get-all-titles))} "All Topics"]
-   [:button.btn.btn-primary {:on-click #(do
+   [:button.btn.btn-primary {:class (if (empty? (:topics @app-state)) "disabled" "btn-primary")
+                             :on-click #(do
                                           (swap! app-state assoc :topics [])
                                           (swap! app-state assoc :topic-title ""))} "Clear Topics"]
    [:input {:placeholder "Search" :class "form-input" :type "text"
