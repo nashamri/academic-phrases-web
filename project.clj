@@ -12,7 +12,8 @@
                  [org.clojure/clojurescript "1.9.946"]
                  [org.clojure/core.async  "0.4.474"]
                  [reagent "0.7.0"]
-                 [com.rpl/specter "1.1.0"]]
+                 [com.rpl/specter "1.1.0"]
+                 [cljsjs/clipboard "1.6.1-1"]]
 
   :plugins [[lein-figwheel "0.5.15"]
             [lein-cljsbuild "1.1.7" :exclusions [[org.clojure/clojure]]]]

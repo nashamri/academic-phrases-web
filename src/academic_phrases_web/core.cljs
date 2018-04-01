@@ -2,6 +2,7 @@
   (:require [academic-phrases-web.phrases :refer [all-phrases]]
             [reagent.core :as reagent :refer [atom]]
             [clojure.string :as s]
+            [cljsjs.clipboard]
             [com.rpl.specter :as S :refer-macros [select select-one ALL MAP-VALS collect]]))
 
 
@@ -69,10 +70,27 @@
     (swap! app-state assoc :choice2 "")
     (swap! app-state assoc :choice3 "")))
 
+(defn clipboard-button [label target]
+  (let [clipboard-atom (atom nil)]
+    (reagent/create-class
+     {:display-name "clipboard-button"
+      :component-did-mount
+      #(let [clipboard (new js/Clipboard (reagent/dom-node %))]
+         (reset! clipboard-atom clipboard))
+      :component-will-unmount
+      #(when-not (nil? @clipboard-atom)
+         (.destroy @clipboard-atom)
+         (reset! clipboard-atom nil))
+      :reagent-render
+      (fn []
+        [:button.btn.btn-primary.clipboard
+         {:data-clipboard-target target}
+         label])})))
+
 (defn sent-ui []
   [:div.animated.fadeIn
    (dyn-sent (:sentence-id @app-state))
-   [:h1.animated.fadeIn (replace-placeholder)]
+   [:h1.animated.fadeIn {:id "copy-this"} (replace-placeholder)]
    ])
 
 (defn mark-placeholders [sent]
@@ -144,6 +162,8 @@
    [:div#main-body]
    ;; [:hr]
    ;; [:p (str (:topic-title @app-state))]
+   ;; [:div {:id "copy-this"} "Testing"]
+   [clipboard-button "Copy" "#copy-this"]
    ])
 
 (reagent/render-component [main-ui]
