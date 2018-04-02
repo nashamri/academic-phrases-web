@@ -84,13 +84,17 @@
       :reagent-render
       (fn []
         [:button.btn.btn-primary.clipboard
-         {:data-clipboard-target target}
+         {:data-clipboard-target target
+          :style {:visibility (if (empty? (:choice1 @app-state)) "hidden" "visible")}
+          }
          label])})))
 
 (defn sent-ui []
   [:div.animated.fadeIn
    (dyn-sent (:sentence-id @app-state))
-   [:h1.animated.fadeIn {:id "copy-this"} (replace-placeholder)]
+   [:h1.animated.fadeIn {:id "copy-this"
+                         :style {:visibility (if (empty? (:choice1 @app-state)) "hidden" "visible")}}
+    (replace-placeholder)]
    [clipboard-button "Copy" "#copy-this"]
    ])
 
@@ -162,7 +166,6 @@
 
    [:div#main-body]
    ;; [:hr]
-   ;; [:p (str (:topic-title @app-state))]
    ;; [:div {:id "copy-this"} "Testing"]
    ])
 
