@@ -170,14 +170,14 @@
                                                :data-tooltip "Browse phrases by topics"} "Topics"]
 
        [:a.btn.btn-link.tooltip.tooltip-right {:on-click #(mount-component topics-ui)
-                                               :data-tooltip "Browse phrases by topics"} "Section"]
+                                               :data-tooltip "Browse phrases by the paper sections"} "Sections"]
        ;; [:button.btn.btn-primary {:on-click #(mount-component topic-ui)
        ;;                           :class (if (empty? (:topic-title @app-state)) "disabled" "btn-primary")} "topic"]
        ]
       ]
      [:div.column.col-2
       [:section.navbar-center
-       [:img.centered.circle {:src "./img/avatar.jpg" :width "32px"}]
+       [:img.centered.circle {:src "./img/avatar.jpg" :width "34px"}]
        ]
       ]
      [:div.column.col-5
