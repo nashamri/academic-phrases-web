@@ -30,6 +30,7 @@
 
 (defn gen-options-group [idx choices]
   [:select {:on-click #(swap! app-state assoc-in [(keyword (str "choice" (str (inc idx))))] (-> % .-target .-value))}
+   [:option "__"]
    (for [choice choices]
      [:option choice])])
 
