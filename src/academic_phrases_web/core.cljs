@@ -148,6 +148,8 @@
                              :on-click #(do
                                           (swap! app-state assoc :topics [])
                                           (swap! app-state assoc :topic-title ""))} "Clear Topics"]
+   [:button.btn.btn-primary {:on-click #(mount-component topic-ui)
+                             :class (if (empty? (:topic-title @app-state)) "d-invisible" "d-visible")} (:topic-title @app-state)]
    [:input {:placeholder "Search" :class "form-input" :type "text"
             :on-change (fn [e] (swap! app-state assoc :topics
                                       (into [] (filter (fn [t]
@@ -171,8 +173,6 @@
 
        [:a.btn.btn-link.tooltip.tooltip-right {:on-click #(mount-component topics-ui)
                                                :data-tooltip "Browse phrases by the paper sections"} "Sections"]
-       ;; [:button.btn.btn-primary {:on-click #(mount-component topic-ui)
-       ;;                           :class (if (empty? (:topic-title @app-state)) "disabled" "btn-primary")} "topic"]
        ]
       ]
      [:div.column.col-2
@@ -191,9 +191,8 @@
 
    [:div.divider]
 
-   [:div#main-body]
-   ;; [:hr]
-   ;; [:div {:id "copy-this"} "Testing"]
+   [:div#main-body {:style {:max-"100%"}}]
+   [:div.divider]
    ]
   )
 
