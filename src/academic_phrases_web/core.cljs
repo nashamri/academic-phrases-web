@@ -189,7 +189,7 @@
      ]
     ]
 
-   [:hr]
+   [:div.divider]
 
    [:div#main-body]
    ;; [:hr]
