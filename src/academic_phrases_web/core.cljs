@@ -158,22 +158,41 @@
 (defn main-ui []
   [:div.container
    [:div.columns
-    [:div.column.col-4.col-mx-auto
-     [:h2 "Academic Phrases"]
-     ]]
-   [:div.columns
-    [:div.column
-     [:button.btn.btn-primary {:on-click #(mount-component topics-ui)} "topics"]
-     [:button.btn.btn-primary {:on-click #(mount-component topic-ui)
-                               :class (if (empty? (:topic-title @app-state)) "disabled" "btn-primary")}
-      "topic"]
-     ]]
+    [:div.column.col-12.col-mx-auto
+     [:h2.text-center "Academic Phrases"]
+     ]
+    ]
+   [:div.columns.centered
+    [:div.navbar
+     [:div.column.col-5
+      [:section.navbar-section
+       [:button.btn.btn-primary {:on-click #(mount-component topics-ui)} "topics"]
+       [:button.btn.btn-primary {:on-click #(mount-component topic-ui)
+                                 :class (if (empty? (:topic-title @app-state)) "disabled" "btn-primary")}
+        "topic"]
+       ]
+      ]
+     [:div.column.col-2
+      [:section.navbar-center
+       [:img.centered.circle {:src "./img/avatar.jpg" :width "32px"}]
+       ]
+      ]
+     [:div.column.col-5
+      [:section.navbar-section.float-right
+       [:a.btn.btn-link {:href "https://twitter.com/nashamri"} "Twitter"]
+       [:a.btn.btn-link {:href "https://github.com/nashamri/academic-phrases-web"} "GitHub"]
+       ]
+      ]
+     ]
+    ]
+
    [:hr]
 
    [:div#main-body]
    ;; [:hr]
    ;; [:div {:id "copy-this"} "Testing"]
-   ])
+   ]
+  )
 
 (reagent/render-component [main-ui]
                           (. js/document (getElementById "app")))
