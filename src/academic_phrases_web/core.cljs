@@ -29,7 +29,7 @@
   (S/select-one (S/walker #(= (:id %) id)) all-phrases))
 
 (defn gen-options-group [idx choices]
-  [:select {:on-click #(swap! app-state assoc-in [(keyword (str "choice" (str (inc idx))))] (-> % .-target .-value))}
+  [:select {:on-change #(swap! app-state assoc-in [(keyword (str "choice" (str (inc idx))))] (-> % .-target .-value))}
    [:option "__"]
    (for [choice choices]
      [:option choice])])
