@@ -158,11 +158,16 @@
 (defn main-ui []
   [:div.container
    [:div.columns
-    [:button.btn.btn-primary {:on-click #(mount-component topics-ui)} "topics"]
-    [:button.btn.btn-primary {:on-click #(mount-component topic-ui)
-                              :class (if (empty? (:topic-title @app-state)) "disabled" "btn-primary")}
-     "topic"]
-    ]
+    [:div.column.col-4.col-mx-auto
+     [:h2 "Academic Phrases"]
+     ]]
+   [:div.columns
+    [:div.column
+     [:button.btn.btn-primary {:on-click #(mount-component topics-ui)} "topics"]
+     [:button.btn.btn-primary {:on-click #(mount-component topic-ui)
+                               :class (if (empty? (:topic-title @app-state)) "disabled" "btn-primary")}
+      "topic"]
+     ]]
    [:hr]
 
    [:div#main-body]
