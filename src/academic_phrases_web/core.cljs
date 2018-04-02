@@ -166,10 +166,13 @@
     [:div.navbar
      [:div.column.col-5
       [:section.navbar-section
-       [:button.btn.btn-primary {:on-click #(mount-component topics-ui)} "topics"]
-       [:button.btn.btn-primary {:on-click #(mount-component topic-ui)
-                                 :class (if (empty? (:topic-title @app-state)) "disabled" "btn-primary")}
-        "topic"]
+       [:a.btn.btn-link.tooltip.tooltip-right {:on-click #(mount-component topics-ui)
+                                               :data-tooltip "Browse phrases by topics"} "Topics"]
+
+       [:a.btn.btn-link.tooltip.tooltip-right {:on-click #(mount-component topics-ui)
+                                               :data-tooltip "Browse phrases by topics"} "Section"]
+       ;; [:button.btn.btn-primary {:on-click #(mount-component topic-ui)
+       ;;                           :class (if (empty? (:topic-title @app-state)) "disabled" "btn-primary")} "topic"]
        ]
       ]
      [:div.column.col-2
