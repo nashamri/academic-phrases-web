@@ -93,10 +93,13 @@
 (defn sent-ui []
   [:div.animated.fadeIn
    (dyn-sent (:sentence-id @app-state))
-   [:h1.animated.fadeIn {:id "copy-this"
-                         :style {:visibility (if (empty? (:choice1 @app-state)) "hidden" "visible")}}
-    (replace-placeholder)]
-   [clipboard-button "Copy" "#copy-this"]
+   [:div.empty
+    [:h4.animated.fadeIn {:id "copy-this"
+                          :style {:visibility (if (empty? (:choice1 @app-state)) "hidden" "visible")}}
+     (replace-placeholder)]
+    [:div.empty-action
+     [clipboard-button "Copy" "#copy-this"]
+     ]]
    ])
 
 (defn mark-placeholders [sent]
