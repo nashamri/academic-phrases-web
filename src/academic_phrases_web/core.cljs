@@ -91,7 +91,7 @@
          label])})))
 
 (defn sent-ui []
-  [:div.animated.fadeIn
+  [:div.animated.fadeIn.text-center
    (dyn-sent (:sentence-id @app-state))
    [:div.empty
     [:h4.animated.fadeIn {:id "copy-this"
@@ -127,7 +127,7 @@
 (defn topic-ui []
   (let [title (:topic-title @app-state)]
     (fn []
-      [:div.animated.fadeIn
+      [:div.animated.fadeIn.text-center
        [:h3 title]
        (map
         (fn [t]
