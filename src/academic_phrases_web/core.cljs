@@ -108,7 +108,11 @@
 (defn sent-card [sent]
   [:table.table
    [:tbody
-    [:tr
+    [:tr.c-hand {:on-click #(do
+                              (swap! app-state assoc :sentence-id (:id sent))
+                              (swap! app-state assoc :template (:template sent))
+                              (reset-choices)
+                              (mount-component sent-ui))}
      [:td (mark-placeholders (s/replace (:template sent) #"\[\{1\}\]|\[\{2\}\]|\[\{3\}\]" "__"))]
      [:td
       [:button.btn.btn-primary.float-right
@@ -133,7 +137,9 @@
 (defn topic-card [topic]
   [:table.table
    [:tbody
-    [:tr
+    [:tr.c-hand {:on-click #(do
+                              (swap! app-state assoc :topic-title topic)
+                              (mount-component topic-ui))}
      [:td [:strong topic]]
      [:td
       [:button.btn.btn-primary.float-right
