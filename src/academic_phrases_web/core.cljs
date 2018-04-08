@@ -173,6 +173,22 @@
      [:h2.text-center "Academic Phrases"]
      ]
     ]
+
+   [:div.divider]
+
+   [:div
+    [:ul.breadcrumb
+     [:li.breadcrumb-item [:a {:on-click #(mount-component topics-ui)} "Sections"]]
+     (if (= (:topic-title @app-state) "")
+       [:li.breadcrumb-item [:a {:href "#"} "No topic selected"]]
+       [:li.breadcrumb-item [:a {:href "#"} (:topic-title @app-state)]])
+     ]
+    ]
+
+   [:div#main-body {:style {:max-"100%"}}]
+
+   [:div.divider]
+
    [:div.columns.centered
     [:div.navbar
      [:div.column.col-5
@@ -198,18 +214,6 @@
      ]
     ]
 
-   [:div.divider]
-
-   [:div
-    [:ul.breadcrumb
-     [:li.breadcrumb-item [:a {:on-click #(mount-component topics-ui)} "Sections"]]
-     (if (= (:topic-title @app-state) "")
-       [:li.breadcrumb-item [:a {:href "#"} "No topic selected"]]
-       [:li.breadcrumb-item [:a {:href "#"} (:topic-title @app-state)]])
-     ]
-    ]
-   [:div#main-body {:style {:max-"100%"}}]
-   [:div.divider]
    ]
   )
 
