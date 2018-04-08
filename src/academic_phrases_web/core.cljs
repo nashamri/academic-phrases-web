@@ -14,7 +14,8 @@
                           :choice3 ""
                           :sentence-id 0
                           :topics []
-                          :topic-title ""}))
+                          :topic-title ""
+                          :section :all}))
 
 
 (defn replace-placeholder []
@@ -166,6 +167,34 @@
                                                        (get-all-titles)))))}]
    [:div (map (fn [t] ^{:key t}[topic-card t]) (:topics @app-state))]])
 
+(defn gen-cats-keywords [s e]
+  (into [] (map #(keyword (str "cat" %)) (range s e))))
+
+(map str (keys {:one 1 :two 2}))
+(name :ehll-yo)
+
+(defn sections-ui []
+  (let [secs {:abstract [:cat1 :cat2 :cat4 :cat5]
+              :intro (gen-cats-keywords 1 16)
+              :review (conj (gen-cats-keywords 9 16) :cat4)
+              :methods (gen-cats-keywords 17 30)
+              :results (gen-cats-keywords 29 40)
+              :discussion (gen-cats-keywords 35 45)
+              :conclusion (gen-cats-keywords 45 51)
+              :acknowledgments [:cat52]
+              :all (gen-cats-keywords 1 57)}]
+    (fn []
+      [:table.table
+       [:tbody
+        (for [sec (keys secs)]
+          [:tr.c-hand
+           [:td [:strong (name sec)]]
+           [:td [:button.btn.btn-primary.float-right [:i.icon.icon-forward]]]
+           ]
+          )
+        ]]
+      )))
+
 (defn main-ui []
   [:div.container
    [:div.columns
@@ -178,7 +207,7 @@
 
    [:div
     [:ul.breadcrumb
-     [:li.breadcrumb-item [:a {:on-click #(mount-component topics-ui)} "Sections"]]
+     [:li.breadcrumb-item [:a {:on-click #(mount-component sections-ui)} "Sections"]]
      (if (= (:topic-title @app-state) "")
        [:li.breadcrumb-item [:a {:href "#"} "No topic selected"]]
        [:li.breadcrumb-item [:a {:href "#"} (:topic-title @app-state)]])
@@ -219,6 +248,9 @@
 
 (reagent/render-component [main-ui]
                           (. js/document (getElementById "app")))
+
+(reagent/render-component [topics-ui]
+                          (. js/document (getElementById "main-body")))
 
 (defn on-js-reload []
   ;; optionally touch your app-state to force rerendering depending on
