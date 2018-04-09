@@ -29,6 +29,14 @@
 (defn get-item-by-id [id]
   (S/select-one (S/walker #(= (:id %) id)) all-phrases))
 
+(defn get-items-by-ids [ids]
+  (mapv get-item-by-id ids))
+
+(defn get-ids-by-cats [cats]
+  (S/select [(S/submap cats) S/ALL S/ALL :items S/ALL :id] all-phrases))
+
+(get-items-by-ids (get-ids-by-cats [:cat1 :cat2]))
+
 (defn gen-options-group [idx choices]
   [:select {:on-change #(swap! app-state assoc-in [(keyword (str "choice" (str (inc idx))))] (-> % .-target .-value))}
    [:option "__"]
@@ -170,8 +178,6 @@
 (defn gen-cats-keywords [s e]
   (into [] (map #(keyword (str "cat" %)) (range s e))))
 
-(map str (keys {:one 1 :two 2}))
-(name :ehll-yo)
 
 (defn sections-ui []
   (let [secs {:abstract [:cat1 :cat2 :cat4 :cat5]
@@ -188,7 +194,7 @@
        [:tbody
         (for [sec (keys secs)]
           [:tr.c-hand
-           [:td [:strong (name sec)]]
+           [:td {:on-click #()}[:strong (name sec)]]
            [:td [:button.btn.btn-primary.float-right [:i.icon.icon-forward]]]
            ]
           )
