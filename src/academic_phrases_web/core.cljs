@@ -213,7 +213,7 @@
 
    [:div
     [:ul.breadcrumb
-     [:li.breadcrumb-item [:a {:on-click #(mount-component sections-ui)} "Sections"]]
+     [:li.breadcrumb-item.c-hand [:a {:on-click #(mount-component sections-ui)} "Sections"]]
      (if (= (:topic-title @app-state) "")
        [:li.breadcrumb-item [:a {:href "#"} "No topic selected"]]
        [:li.breadcrumb-item [:a {:href "#"} (:topic-title @app-state)]])
