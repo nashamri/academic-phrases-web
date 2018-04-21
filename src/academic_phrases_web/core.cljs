@@ -115,7 +115,7 @@
   (interpose [:mark "__"] (s/split sent #"__")))
 
 (defn sent-card [sent]
-  [:table.table
+  [:table.table.table-hover
    [:tbody
     [:tr.c-hand {:on-click #(do
                               (swap! app-state assoc :sentence-id (:id sent))
@@ -144,7 +144,7 @@
         (get-items-by-title title))])))
 
 (defn topic-card [topic]
-  [:table.table
+  [:table.table.table-hover
    [:tbody
     [:tr.c-hand {:on-click #(do
                               (swap! app-state assoc :topic-title topic)
@@ -190,7 +190,7 @@
               :acknowledgments [:cat52]
               :all (gen-cats-keywords 1 57)}]
     (fn []
-      [:table.table
+      [:table.table.table-hover
        [:tbody
         (for [sec (keys secs)]
           [:tr.c-hand
