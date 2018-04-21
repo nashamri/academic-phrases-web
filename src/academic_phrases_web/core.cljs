@@ -194,7 +194,7 @@
        [:tbody
         (for [sec (keys secs)]
           [:tr.c-hand
-           [:td {:on-click #()}[:strong (name sec)]]
+           [:td {:on-click #()}[:strong (s/capitalize (name sec))]]
            [:td [:button.btn.btn-primary.float-right [:i.icon.icon-forward]]]
            ]
           )
