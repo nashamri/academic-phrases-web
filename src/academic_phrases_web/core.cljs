@@ -190,19 +190,20 @@
 (defn sections-ui []
   (let [secs ["All" "Abstract" "Intro" "Review" "Methods" "Results" "Discussion" "Conclusion" "Acknowledgments"]]
     (fn []
-      [:table.table.table-hover
-       [:tbody
-        (for [sec secs]
-          [:tr.c-hand
-           [:td {:on-click #(do
-                              (swap! app-state assoc :section (keyword (s/lower-case sec)))
-                              (update-topics! (get-topics-titles-by-cats ((:section @app-state) secs-cats)))
-                              (mount-component topics-ui))}
-            [:strong sec]]
-           [:td [:button.btn.btn-primary.float-right [:i.icon.icon-forward]]]
-           ]
-          )
-        ]]
+      [:div.animated.fadeIn
+       [:table.table.table-hover
+        [:tbody
+         (for [sec secs]
+           [:tr.c-hand
+            [:td {:on-click #(do
+                               (swap! app-state assoc :section (keyword (s/lower-case sec)))
+                               (update-topics! (get-topics-titles-by-cats ((:section @app-state) secs-cats)))
+                               (mount-component topics-ui))}
+             [:strong sec]]
+            [:td [:button.btn.btn-primary.float-right [:i.icon.icon-forward]]]
+            ]
+           )
+         ]]]
       )))
 
 (defn breadcrumb-ui []
