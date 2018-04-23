@@ -166,36 +166,34 @@
 
 
 (defn topics-ui []
-  (let [secs {:abstract [:cat1 :cat2 :cat4 :cat5]
-              :intro (gen-cats-keywords 1 16)
-              :review (conj (gen-cats-keywords 9 16) :cat4)
-              :methods (gen-cats-keywords 17 30)
-              :results (gen-cats-keywords 29 40)
-              :discussion (gen-cats-keywords 35 45)
-              :conclusion (gen-cats-keywords 45 51)
-              :acknowledgments [:cat52]
-              :all (gen-cats-keywords 1 57)}]
-    (fn []
-      [:div.animated.fadeIn
-       [:button.btn.btn-primary {:on-click #(update-topics! (get-all-titles))} "All Topics"]
-       [:button.btn.btn-primary {:class (if (empty? (:topics @app-state)) "disabled" "btn-primary")
-                                 :on-click #(do
-                                              (swap! app-state assoc :topics [])
-                                              (swap! app-state assoc :topic-title ""))} "Clear Topics"]
-       [:button.btn.btn-primary {:on-click #(mount-component topic-ui)
-                                 :class (if (empty? (:topic-title @app-state)) "d-invisible" "d-visible")} (:topic-title @app-state)]
-       [:input {:placeholder "Search" :class "form-input" :type "text"
-                :on-change (fn [e] (swap! app-state assoc :topics
-                                          (into [] (filter (fn [t]
-                                                             (s/includes? (s/lower-case t) (-> e .-target .-value)))
-                                                           (get-all-titles)))))}]
-       (doall
-        (update-topics! (get-topics-titles-by-cats ((:section @app-state) secs)))
-        [:div (map (fn [t] ^{:key t}[topic-card t]) (:topics @app-state))])])))
+  [:div.animated.fadeIn
+   [:button.btn.btn-primary {:on-click #(update-topics! (get-all-titles))} "All Topics"]
+   [:button.btn.btn-primary {:class (if (empty? (:topics @app-state)) "disabled" "btn-primary")
+                             :on-click #(do
+                                          (swap! app-state assoc :topics [])
+                                          (swap! app-state assoc :topic-title ""))} "Clear Topics"]
+   [:button.btn.btn-primary {:on-click #(mount-component topic-ui)
+                             :class (if (empty? (:topic-title @app-state)) "d-invisible" "d-visible")} (:topic-title @app-state)]
+   [:input {:placeholder "Search" :class "form-input" :type "text"
+            :on-change (fn [e] (swap! app-state assoc :topics
+                                      (into [] (filter (fn [t]
+                                                         (s/includes? (s/lower-case t) (-> e .-target .-value)))
+                                                       (get-topics-titles-by-cats ((:section @app-state) secs-cats))))))}]
+   [:div (map (fn [t] ^{:key t}[topic-card t]) (:topics @app-state))]
+   ])
 
 (defn gen-cats-keywords [s e]
   (into [] (map #(keyword (str "cat" %)) (range s e))))
 
+(def secs-cats {:abstract [:cat1 :cat2 :cat4 :cat5]
+                :intro (gen-cats-keywords 1 16)
+                :review (conj (gen-cats-keywords 9 16) :cat4)
+                :methods (gen-cats-keywords 17 30)
+                :results (gen-cats-keywords 29 40)
+                :discussion (gen-cats-keywords 35 45)
+                :conclusion (gen-cats-keywords 45 51)
+                :acknowledgments [:cat52]
+                :all (gen-cats-keywords 1 57)})
 
 (defn sections-ui []
   (let [secs ["All" "Abstract" "Intro" "Review" "Methods" "Results" "Discussion" "Conclusion" "Acknowledgments"]]
@@ -206,6 +204,7 @@
           [:tr.c-hand
            [:td {:on-click #(do
                               (swap! app-state assoc :section (keyword (s/lower-case sec)))
+                              (update-topics! (get-topics-titles-by-cats ((:section @app-state) secs-cats)))
                               (mount-component topics-ui))}
             [:strong sec]]
            [:td [:button.btn.btn-primary.float-right [:i.icon.icon-forward]]]
@@ -226,9 +225,10 @@
 
    [:div
     [:ul.breadcrumb
-     [:li.breadcrumb-item.c-hand [:a {:on-click #(mount-component sections-ui)} "Sections"]]
-     (if (= (:topic-title @app-state) "")
-       [:li.breadcrumb-item [:a {:href "#"} "No topic selected"]]
+     [:li.breadcrumb-item.c-hand [:a {:on-click #(mount-component sections-ui)} "Start"]]
+     (when (not= (:topic-title @app-state) "")
+       [:li.breadcrumb-item [:a {:href "#"} (:section @app-state)]])
+     (when (not= (:topic-title @app-state) "")
        [:li.breadcrumb-item [:a {:href "#"} (:topic-title @app-state)]])
      ]
     ]
