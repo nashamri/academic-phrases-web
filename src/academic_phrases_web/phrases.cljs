@@ -1528,7 +1528,7 @@
                    {:id 479
                     :template "This paper has [{1}] ..."
                     :choices [["investigated" "explained" "given an account of"]]}]}
-   :cat46 {:title "Restating the results (Conclusions section)"
+   :cat46 {:title "Restating the results"
            :items [
                    {:id 480
                     :template "The evidence from this study [{1}] that ..."
@@ -1542,7 +1542,7 @@
                    {:id 483
                     :template "[{1}] of this is the possibility that ..."
                     :choices [["An implication" "A consequence" "The upshot"]]}]}
-   :cat47 {:title "Highlighting achievements (Conclusions section)"
+   :cat47 {:title "Highlighting achievements"
            :items [
                    {:id 484
                     :template "[{1}] has [{2}] the importance of ..."
@@ -1586,7 +1586,7 @@
                    {:id 497
                     :template "These findings add [{1}] X."
                     :choices [["to a growing body of literature on" "substantially to our understanding of"]]}]}
-   :cat48 {:title "Highlighting limitations (Conclusions section)"
+   :cat48 {:title "Highlighting limitations"
            :items [
                    {:id 498
                     :template "Our work clearly has some limitations. [{1}] we believe our work could be [{2}]"
