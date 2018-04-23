@@ -35,7 +35,6 @@
 (defn get-ids-by-cats [cats]
   (S/select [(S/submap cats) S/ALL S/ALL :items S/ALL :id] all-phrases))
 
-(get-items-by-ids (get-ids-by-cats [:cat1 :cat2]))
 
 (defn gen-options-group [idx choices]
   [:select {:on-change #(swap! app-state assoc-in [(keyword (str "choice" (str (inc idx))))] (-> % .-target .-value))}
@@ -46,8 +45,15 @@
 (defn get-all-titles []
   (S/select [S/MAP-VALS :title] all-phrases))
 
-(defn get-topic-titles [topic-id]
-  (S/select [(keyword (str "cat" topic-id)) :items] all-phrases))
+(defn get-topic-title [topic-id]
+  (let [cat (keyword (str "cat" topic-id))]
+    (S/select-one [cat :title] all-phrases)))
+
+(defn get-topic-title-by-cat [cat]
+  (S/select-one [cat :title] all-phrases))
+
+(defn get-topics-titles-by-cats [cats]
+  (mapv get-topic-title-by-cat cats))
 
 (defn get-items-by-title [title]
   (S/select [(S/walker #(= (:title %) title)) :items S/ALL] all-phrases))
@@ -160,26 +166,6 @@
 
 
 (defn topics-ui []
-  [:div.animated.fadeIn
-   [:button.btn.btn-primary {:on-click #(update-topics! (get-all-titles))} "All Topics"]
-   [:button.btn.btn-primary {:class (if (empty? (:topics @app-state)) "disabled" "btn-primary")
-                             :on-click #(do
-                                          (swap! app-state assoc :topics [])
-                                          (swap! app-state assoc :topic-title ""))} "Clear Topics"]
-   [:button.btn.btn-primary {:on-click #(mount-component topic-ui)
-                             :class (if (empty? (:topic-title @app-state)) "d-invisible" "d-visible")} (:topic-title @app-state)]
-   [:input {:placeholder "Search" :class "form-input" :type "text"
-            :on-change (fn [e] (swap! app-state assoc :topics
-                                      (into [] (filter (fn [t]
-                                                         (s/includes? (s/lower-case t) (-> e .-target .-value)))
-                                                       (get-all-titles)))))}]
-   [:div (map (fn [t] ^{:key t}[topic-card t]) (:topics @app-state))]])
-
-(defn gen-cats-keywords [s e]
-  (into [] (map #(keyword (str "cat" %)) (range s e))))
-
-
-(defn sections-ui []
   (let [secs {:abstract [:cat1 :cat2 :cat4 :cat5]
               :intro (gen-cats-keywords 1 16)
               :review (conj (gen-cats-keywords 9 16) :cat4)
@@ -190,11 +176,38 @@
               :acknowledgments [:cat52]
               :all (gen-cats-keywords 1 57)}]
     (fn []
+      [:div.animated.fadeIn
+       [:button.btn.btn-primary {:on-click #(update-topics! (get-all-titles))} "All Topics"]
+       [:button.btn.btn-primary {:class (if (empty? (:topics @app-state)) "disabled" "btn-primary")
+                                 :on-click #(do
+                                              (swap! app-state assoc :topics [])
+                                              (swap! app-state assoc :topic-title ""))} "Clear Topics"]
+       [:button.btn.btn-primary {:on-click #(mount-component topic-ui)
+                                 :class (if (empty? (:topic-title @app-state)) "d-invisible" "d-visible")} (:topic-title @app-state)]
+       [:input {:placeholder "Search" :class "form-input" :type "text"
+                :on-change (fn [e] (swap! app-state assoc :topics
+                                          (into [] (filter (fn [t]
+                                                             (s/includes? (s/lower-case t) (-> e .-target .-value)))
+                                                           (get-all-titles)))))}]
+       (doall
+        (update-topics! (get-topics-titles-by-cats ((:section @app-state) secs)))
+        [:div (map (fn [t] ^{:key t}[topic-card t]) (:topics @app-state))])])))
+
+(defn gen-cats-keywords [s e]
+  (into [] (map #(keyword (str "cat" %)) (range s e))))
+
+
+(defn sections-ui []
+  (let [secs ["All" "Abstract" "Intro" "Review" "Methods" "Results" "Discussion" "Conclusion" "Acknowledgments"]]
+    (fn []
       [:table.table.table-hover
        [:tbody
-        (for [sec (keys secs)]
+        (for [sec secs]
           [:tr.c-hand
-           [:td {:on-click #()}[:strong (s/capitalize (name sec))]]
+           [:td {:on-click #(do
+                              (swap! app-state assoc :section (keyword (s/lower-case sec)))
+                              (mount-component topics-ui))}
+            [:strong sec]]
            [:td [:button.btn.btn-primary.float-right [:i.icon.icon-forward]]]
            ]
           )
@@ -255,7 +268,7 @@
 (reagent/render-component [main-ui]
                           (. js/document (getElementById "app")))
 
-(reagent/render-component [topics-ui]
+(reagent/render-component [sections-ui]
                           (. js/document (getElementById "main-body")))
 
 (defn on-js-reload []
