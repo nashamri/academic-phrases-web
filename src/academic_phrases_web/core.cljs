@@ -15,7 +15,7 @@
                           :sentence-id 0
                           :topics []
                           :topic-title ""
-                          :section :all}))
+                          :section ""}))
 
 
 (defn replace-placeholder []
@@ -205,6 +205,22 @@
         ]]
       )))
 
+(defn breadcrumb-ui []
+  [:div
+   [:ul.breadcrumb
+    [:li.breadcrumb-item.c-hand [:a {:on-click #(do
+                                                  (swap! app-state assoc :section "")
+                                                  (swap! app-state assoc :topic-title "")
+                                                  (mount-component sections-ui))} "Section"]]
+    (when (not= (:section @app-state) "")
+      [:li.breadcrumb-item [:a {:on-click #(do
+                                             (swap! app-state assoc :topic-title "")
+                                             (mount-component topics-ui))}
+                            (s/capitalize (name (:section @app-state)))]])
+    (when (not= (:topic-title @app-state) "")
+      [:li.breadcrumb-item [:a {:on-click #(mount-component topic-ui)} (:topic-title @app-state)]])
+    ]])
+
 (defn main-ui []
   [:div.container
    [:div.columns
@@ -215,19 +231,11 @@
 
    [:div.divider]
 
-   [:div
-    [:ul.breadcrumb
-     [:li.breadcrumb-item.c-hand [:a {:on-click #(mount-component sections-ui)} "Start"]]
-     (when (not= (:topic-title @app-state) "")
-       [:li.breadcrumb-item [:a {:href "#"} (:section @app-state)]])
-     (when (not= (:topic-title @app-state) "")
-       [:li.breadcrumb-item [:a {:href "#"} (:topic-title @app-state)]])
-     ]
-    ]
-
-   [:div#main-body {:style {:max-"100%"}}]
+   (breadcrumb-ui)
 
    [:div.divider]
+
+   [:div#main-body {:style {:max-"100%"}}]
 
    [:div.columns.centered
     [:div.navbar
