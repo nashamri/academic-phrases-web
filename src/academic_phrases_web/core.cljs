@@ -143,7 +143,6 @@
   (let [title (:topic-title @app-state)]
     (fn []
       [:div.animated.fadeIn.text-center
-       [:h3 title]
        (map
         (fn [t]
           (sent-card t))
@@ -167,13 +166,6 @@
 
 (defn topics-ui []
   [:div.animated.fadeIn
-   [:button.btn.btn-primary {:on-click #(update-topics! (get-all-titles))} "All Topics"]
-   [:button.btn.btn-primary {:class (if (empty? (:topics @app-state)) "disabled" "btn-primary")
-                             :on-click #(do
-                                          (swap! app-state assoc :topics [])
-                                          (swap! app-state assoc :topic-title ""))} "Clear Topics"]
-   [:button.btn.btn-primary {:on-click #(mount-component topic-ui)
-                             :class (if (empty? (:topic-title @app-state)) "d-invisible" "d-visible")} (:topic-title @app-state)]
    [:input {:placeholder "Search" :class "form-input" :type "text"
             :on-change (fn [e] (swap! app-state assoc :topics
                                       (into [] (filter (fn [t]
