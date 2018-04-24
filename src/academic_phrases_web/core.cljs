@@ -124,9 +124,7 @@
                           :style {:visibility (if (empty? (:choice1 @app-state)) "hidden" "visible")}}
      (replace-placeholder)]
     [:div.empty-action
-     [clipboard-button "Copy" "#copy-this"]
-     ]]
-   ])
+     [clipboard-button "Copy" "#copy-this"]]]])
 
 (defn mark-placeholders [sent]
   (let [split-sent (s/split sent #"__")
@@ -150,9 +148,7 @@
                      (swap! app-state assoc :sentence-id (:id sent))
                      (swap! app-state assoc :template (:template sent))
                      (reset-choices)
-                     (mount-component sent-ui))} [:i.icon.icon-forward]]
-      ]]]
-   ])
+                     (mount-component sent-ui))} [:i.icon.icon-forward]]]]]])
 
 (defn topic-ui []
   (let [title (:topic-title @app-state)]
@@ -174,9 +170,7 @@
       [:button.btn.btn-primary.float-right
        {:on-click #(do
                      (swap! app-state assoc :topic-title topic)
-                     (mount-component topic-ui))} [:i.icon.icon-forward]]
-      ]]]
-   ])
+                     (mount-component topic-ui))} [:i.icon.icon-forward]]]]]])
 
 (defn topics-ui []
   [:div.animated.fadeIn
@@ -185,8 +179,7 @@
                                       (into [] (filter (fn [t]
                                                          (s/includes? (s/lower-case t) (-> e .-target .-value s/lower-case)))
                                                        (get-topics-titles-by-cats ((:section @app-state) secs-cats))))))}]
-   [:div (map (fn [t] ^{:key t}[topic-card t]) (:topics @app-state))]
-   ])
+   [:div (map (fn [t] ^{:key t}[topic-card t]) (:topics @app-state))]])
 
 (defn sections-ui []
   (let [secs ["All" "Abstract" "Intro" "Review" "Methods" "Results" "Discussion" "Conclusion" "Acknowledgments"]]
@@ -201,21 +194,14 @@
                                (update-topics! (get-topics-titles-by-cats ((:section @app-state) secs-cats)))
                                (mount-component topics-ui))}
              [:strong sec]]
-            [:td [:button.btn.btn-primary.float-right [:i.icon.icon-forward]]]
-            ]
-           )
-         ]]]
-      )))
+            [:td [:button.btn.btn-primary.float-right [:i.icon.icon-forward]]]])]]])))
 
 (defn header-ui []
   [:div.columns
    [:div.column.col-12
     [:h2#site-header.text-center "Academic Phrases"]
     [:h6.text-center.text-gray "Bypass that mental block when writing your papers"]
-    [:div.divider]
-    ]
-   ]
-  )
+    [:div.divider]]])
 
 (defn breadcrumb-ui []
   [:div.columns
@@ -232,11 +218,8 @@
                                               (mount-component topics-ui))}
                              (s/capitalize (name (:section @app-state)))]])
      (when (not= (:topic-title @app-state) "")
-       [:li.breadcrumb-item [:a {:on-click #(mount-component topic-ui)} (:topic-title @app-state)]])
-
-     ]
-    [:div.divider.text-center {:data-content "🎓"}]
-    ]])
+       [:li.breadcrumb-item [:a {:on-click #(mount-component topic-ui)} (:topic-title @app-state)]])]
+    [:div.divider.text-center {:data-content "🎓"}]]])
 
 (defn footer-ui []
   [:div
@@ -253,18 +236,14 @@
     [:div.column.col-12.text-center
      [:img.centered.circle {:src "./img/avatar.jpg" :width "34px"}]
      [:a.btn.btn-link {:href "https://twitter.com/nashamri"} "Twitter"]
-     [:a.btn.btn-link {:href "https://github.com/nashamri/academic-phrases-web"} "GitHub"]]]
-   ]
-  )
+     [:a.btn.btn-link {:href "https://github.com/nashamri/academic-phrases-web"} "GitHub"]]]])
 
 (defn main-ui []
   [:div.container
    (header-ui)
    (breadcrumb-ui)
    [:div#main-body {:style {:max-"100%"}}]
-   (footer-ui)
-   ]
-  )
+   (footer-ui)])
 
 (reagent/render-component [main-ui]
                           (. js/document (getElementById "app")))
