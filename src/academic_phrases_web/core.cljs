@@ -169,7 +169,7 @@
    [:input {:placeholder "Search" :class "form-input" :type "text"
             :on-change (fn [e] (swap! app-state assoc :topics
                                       (into [] (filter (fn [t]
-                                                         (s/includes? (s/lower-case t) (-> e .-target .-value)))
+                                                         (s/includes? (s/lower-case t) (-> e .-target .-value s/lower-case)))
                                                        (get-topics-titles-by-cats ((:section @app-state) secs-cats))))))}]
    [:div (map (fn [t] ^{:key t}[topic-card t]) (:topics @app-state))]
    ])
