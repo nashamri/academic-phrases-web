@@ -1,6 +1,6 @@
 (ns academic-phrases-web.core
   (:require [academic-phrases-web.phrases :refer [all-phrases]]
-            [reagent.core :as reagent :refer [atom]]
+            [reagent.core :as reagent]
             [clojure.string :as s]
             [cljsjs.clipboard]
             [com.rpl.specter :as S :refer-macros [select select-one ALL MAP-VALS collect]]))
@@ -9,23 +9,32 @@
 (enable-console-print!)
 
 
-(defonce app-state (atom {:template ""
-                          :choice1 ""
-                          :choice2 ""
-                          :choice3 ""
-                          :sentence-id 0
-                          :topics []
-                          :topic-title ""
-                          :section ""}))
+(defonce app-state (reagent/atom {:template ""
+                                  :choice1 ""
+                                  :choice2 ""
+                                  :choice3 ""
+                                  :sentence-id 0
+                                  :topics []
+                                  :topic-title ""
+                                  :section ""}))
+
+(def uniqkey (atom 0))
+
+(defn gen-key []
+  (let [res (swap! uniqkey inc)]
+    res))
 
 (defn gen-cats-keywords [s e]
   (into [] (map #(keyword (str "cat" %)) (range s e))))
 
 (defn gen-options-group [idx choices]
+  ^{:key (str idx)}
   [:select {:on-change #(swap! app-state assoc-in [(keyword (str "choice" (str (inc idx))))] (-> % .-target .-value))}
    [:option "__"]
    (for [choice choices]
-     [:option choice])])
+     ^{:key (str choice idx (gen-key))}
+     [:option choice]
+     )])
 
 (def secs-cats {:abstract [:cat1 :cat2 :cat4 :cat5]
                 :intro (gen-cats-keywords 1 16)
@@ -84,7 +93,7 @@
         choices (:choices item)
         select (concat (select-html id) " ")
         sentence (-> split-tmp
-                     (->> (map (fn [i] [:span i])))
+                     (->> (map (fn [i] ^{:key (str i)} [:span i])))
                      (interleave select))]
     sentence))
 
@@ -98,7 +107,7 @@
     (swap! app-state assoc :choice3 "")))
 
 (defn clipboard-button [label target]
-  (let [clipboard-atom (atom nil)]
+  (let [clipboard-atom (reagent/atom nil)]
     (reagent/create-class
      {:display-name "clipboard-button"
       :component-did-mount
@@ -128,38 +137,40 @@
 
 (defn mark-placeholders [sent]
   (let [split-sent (s/split sent #"__")
-        inter-sent (interpose [:mark "__"] split-sent)]
+        inter-sent (interpose ^{:key (str sent (gen-key))} [:mark "__"] split-sent)]
     (if (= (count split-sent) 1)
       (cons inter-sent [[:mark "__"]])
       inter-sent)))
 
 (defn sent-card [sent]
-  [:table.table.table-hover
-   [:tbody
-    [:tr.c-hand {:on-click #(do
-                              (swap! app-state assoc :sentence-id (:id sent))
-                              (swap! app-state assoc :template (:template sent))
-                              (reset-choices)
-                              (mount-component sent-ui))}
-     [:td (mark-placeholders (s/replace (:template sent) #"\[\{1\}\]|\[\{2\}\]|\[\{3\}\]" "__"))]
-     [:td
-      [:button.btn.btn-primary.float-right
-       {:on-click #(do
-                     (swap! app-state assoc :sentence-id (:id sent))
-                     (swap! app-state assoc :template (:template sent))
-                     (reset-choices)
-                     (mount-component sent-ui))} [:i.icon.icon-forward]]]]]])
+  ^{:key (str "sent-card-" sent)}
+  [:tr.c-hand {:on-click #(do
+                            (swap! app-state assoc :sentence-id (:id sent))
+                            (swap! app-state assoc :template (:template sent))
+                            (reset-choices)
+                            (mount-component sent-ui))}
+   [:td (mark-placeholders (s/replace (:template sent) #"\[\{1\}\]|\[\{2\}\]|\[\{3\}\]" "__"))]
+   [:td
+    [:button.btn.btn-primary.float-right
+     {:on-click #(do
+                   (swap! app-state assoc :sentence-id (:id sent))
+                   (swap! app-state assoc :template (:template sent))
+                   (reset-choices)
+                   (mount-component sent-ui))} [:i.icon.icon-forward]]]])
 
 (defn topic-ui []
   (let [title (:topic-title @app-state)]
     (fn []
       [:div.animated.fadeIn.text-center
-       (map
-        (fn [t]
-          (sent-card t))
-        (get-items-by-title title))])))
+       [:table.table.table-hover
+        [:tbody
+         (map
+          (fn [t]
+            (sent-card t))
+          (get-items-by-title title))]]])))
 
 (defn topic-card [topic]
+  ^{:key (:topic-title topic)}
   [:table.table.table-hover
    [:tbody
     [:tr.c-hand {:on-click #(do
@@ -188,6 +199,7 @@
        [:table.table.table-hover
         [:tbody
          (for [sec secs]
+           ^{:key sec}
            [:tr.c-hand
             [:td {:on-click #(do
                                (swap! app-state assoc :section (keyword (s/lower-case sec)))
