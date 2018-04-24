@@ -224,18 +224,22 @@
     ]])
 
 (defn footer-ui []
-  [:div.columns
-   [:div.navbar
-    [:div.column.col-12
-     [:section.navbar-section.text-center
-      [:p "This work was based on the freely available PDF titled “English
+  [:div
+   [:div.columns
+    [:div.navbar
+     [:div.column.col-12
+      [:section.navbar-section.text-center
+       [:p.text-gray "This work was based on the freely available PDF titled “English
       for Writing Research - Papers Useful Phrases” which can be found here
       http://www.springer.com/gb/book/9783319260921. This work was done with the
       kind permission of Springer Nature and Adrian Wallwork."]
-      [:div {:style {:display "inline"}}
-       [:a.btn.btn-link {:href "https://twitter.com/nashamri"} "Twitter"]
-       [:img.centered.circle {:src "./img/avatar.jpg" :width "34px"}]
-       [:a.btn.btn-link {:href "https://github.com/nashamri/academic-phrases-web"} "GitHub"]]]]]
+       ]]]]
+
+   [:div.columns
+    [:div.column.col-12.text-center
+     [:img.centered.circle {:src "./img/avatar.jpg" :width "34px"}]
+     [:a.btn.btn-link {:href "https://twitter.com/nashamri"} "Twitter"]
+     [:a.btn.btn-link {:href "https://github.com/nashamri/academic-phrases-web"} "GitHub"]]]
    ]
   )
 
