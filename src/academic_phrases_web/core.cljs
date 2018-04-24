@@ -117,7 +117,11 @@
    ])
 
 (defn mark-placeholders [sent]
-  (interpose [:mark "__"] (s/split sent #"__")))
+  (let [split-sent (s/split sent #"__")
+        inter-sent (interpose [:mark "__"] split-sent)]
+    (if (= (count split-sent) 1)
+      (cons inter-sent [[:mark "__"]])
+      inter-sent)))
 
 (defn sent-card [sent]
   [:table.table.table-hover
@@ -203,8 +207,6 @@
            )
          ]]]
       )))
-
-
 
 (defn header-ui []
   [:div.columns
