@@ -8,6 +8,8 @@
 
 (enable-console-print!)
 
+(declare secs-cats)
+
 (defonce app-state (atom {:template ""
                           :choice1 ""
                           :choice2 ""
@@ -16,7 +18,6 @@
                           :topics []
                           :topic-title ""
                           :section ""}))
-
 
 (defn replace-placeholder []
   (let [tmp (:template @app-state)
@@ -34,7 +35,6 @@
 
 (defn get-ids-by-cats [cats]
   (S/select [(S/submap cats) S/ALL S/ALL :items S/ALL :id] all-phrases))
-
 
 (defn gen-options-group [idx choices]
   [:select {:on-change #(swap! app-state assoc-in [(keyword (str "choice" (str (inc idx))))] (-> % .-target .-value))}
@@ -57,7 +57,6 @@
 
 (defn get-items-by-title [title]
   (S/select [(S/walker #(= (:title %) title)) :items S/ALL] all-phrases))
-
 
 (defn update-topics! [titles]
   (swap! app-state assoc :topics titles))
@@ -163,7 +162,6 @@
       ]]]
    ])
 
-
 (defn topics-ui []
   [:div.animated.fadeIn
    [:input {:placeholder "Search" :class "form-input" :type "text"
@@ -206,36 +204,52 @@
          ]]]
       )))
 
+
+
+(defn header-ui []
+  [:div.columns
+   [:div.column.col-12
+    [:h2#site-header.text-center "Academic Phrases"]
+    [:h6.text-center.text-gray "Bypass that mental block when writing your papers"]
+    [:div.divider]
+    ]
+   ]
+  )
+
 (defn breadcrumb-ui []
-  [:div
-   [:ul.breadcrumb
-    [:li.breadcrumb-item.c-hand [:a.tooltip.tooltip-right {:on-click #(do
-                                                                        (swap! app-state assoc :section "")
-                                                                        (swap! app-state assoc :topic-title "")
-                                                                        (mount-component sections-ui))
-                                                           :data-tooltip "Browse phrases by the paper sections"} "Section"]]
-    (when (not= (:section @app-state) "")
-      [:li.breadcrumb-item [:a {:on-click #(do
-                                             (swap! app-state assoc :topic-title "")
-                                             (mount-component topics-ui))}
-                            (s/capitalize (name (:section @app-state)))]])
-    (when (not= (:topic-title @app-state) "")
-      [:li.breadcrumb-item [:a {:on-click #(mount-component topic-ui)} (:topic-title @app-state)]])
+  [:div.columns
+   [:div.column.col-12
+    [:ul.breadcrumb
+     [:li.breadcrumb-item.c-hand [:a.tooltip.tooltip-right {:on-click #(do
+                                                                         (swap! app-state assoc :section "")
+                                                                         (swap! app-state assoc :topic-title "")
+                                                                         (mount-component sections-ui))
+                                                            :data-tooltip "Browse phrases by the paper sections"} "Section"]]
+     (when (not= (:section @app-state) "")
+       [:li.breadcrumb-item [:a {:on-click #(do
+                                              (swap! app-state assoc :topic-title "")
+                                              (mount-component topics-ui))}
+                             (s/capitalize (name (:section @app-state)))]])
+     (when (not= (:topic-title @app-state) "")
+       [:li.breadcrumb-item [:a {:on-click #(mount-component topic-ui)} (:topic-title @app-state)]])
+
+     ]
+    [:div.divider.text-center {:data-content "🎓"}]
     ]])
 
 (defn footer-ui []
   [:div
-   [:div.columns
-    [:div.navbar
-     [:div.column.col-12
-      [:section.navbar-section.text-center
-       [:p.text-gray "This work was based on the freely available PDF titled “English
-      for Writing Research - Papers Useful Phrases” which can be found here
-      http://www.springer.com/gb/book/9783319260921. This work was done with the
-      kind permission of Springer Nature and Adrian Wallwork."]
-       ]]]]
+   [:div.columns.bg-gray
+    [:div.column.col-12
+     [:div#footer-p.text-gray.text-center
+      [:p "This work was based on the freely available PDF
+      titled “English for Writing Research - Papers Useful Phrases” which can be
+      found "
+       [:span [:a {:href "http://www.springer.com/gb/book/9783319260921"} "here."]]
+       [:p "This work was done with the kind permission of Springer Nature and
+      Adrian Wallwork."]]]]]
 
-   [:div.columns
+   [:div.columns.bg-gray
     [:div.column.col-12.text-center
      [:img.centered.circle {:src "./img/avatar.jpg" :width "34px"}]
      [:a.btn.btn-link {:href "https://twitter.com/nashamri"} "Twitter"]
@@ -245,16 +259,9 @@
 
 (defn main-ui []
   [:div.container
-   [:div.columns
-    [:div.column.col-12.col-mx-auto
-     [:h2.text-center "Academic Phrases"]
-     ]
-    ]
-   [:div.divider]
+   (header-ui)
    (breadcrumb-ui)
-   [:div.divider]
    [:div#main-body {:style {:max-"100%"}}]
-   [:div.divider]
    (footer-ui)
    ]
   )
