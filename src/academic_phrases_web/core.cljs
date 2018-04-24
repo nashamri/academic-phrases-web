@@ -8,7 +8,6 @@
 
 (enable-console-print!)
 
-(declare secs-cats)
 
 (defonce app-state (atom {:template ""
                           :choice1 ""
@@ -18,6 +17,25 @@
                           :topics []
                           :topic-title ""
                           :section ""}))
+
+(defn gen-cats-keywords [s e]
+  (into [] (map #(keyword (str "cat" %)) (range s e))))
+
+(defn gen-options-group [idx choices]
+  [:select {:on-change #(swap! app-state assoc-in [(keyword (str "choice" (str (inc idx))))] (-> % .-target .-value))}
+   [:option "__"]
+   (for [choice choices]
+     [:option choice])])
+
+(def secs-cats {:abstract [:cat1 :cat2 :cat4 :cat5]
+                :intro (gen-cats-keywords 1 16)
+                :review (conj (gen-cats-keywords 9 16) :cat4)
+                :methods (gen-cats-keywords 17 30)
+                :results (gen-cats-keywords 29 40)
+                :discussion (gen-cats-keywords 35 45)
+                :conclusion (gen-cats-keywords 45 51)
+                :acknowledgments [:cat52]
+                :all (gen-cats-keywords 1 57)})
 
 (defn replace-placeholder []
   (let [tmp (:template @app-state)
@@ -35,12 +53,6 @@
 
 (defn get-ids-by-cats [cats]
   (S/select [(S/submap cats) S/ALL S/ALL :items S/ALL :id] all-phrases))
-
-(defn gen-options-group [idx choices]
-  [:select {:on-change #(swap! app-state assoc-in [(keyword (str "choice" (str (inc idx))))] (-> % .-target .-value))}
-   [:option "__"]
-   (for [choice choices]
-     [:option choice])])
 
 (defn get-all-titles []
   (S/select [S/MAP-VALS :title] all-phrases))
@@ -176,19 +188,6 @@
    [:div (map (fn [t] ^{:key t}[topic-card t]) (:topics @app-state))]
    ])
 
-(defn gen-cats-keywords [s e]
-  (into [] (map #(keyword (str "cat" %)) (range s e))))
-
-(def secs-cats {:abstract [:cat1 :cat2 :cat4 :cat5]
-                :intro (gen-cats-keywords 1 16)
-                :review (conj (gen-cats-keywords 9 16) :cat4)
-                :methods (gen-cats-keywords 17 30)
-                :results (gen-cats-keywords 29 40)
-                :discussion (gen-cats-keywords 35 45)
-                :conclusion (gen-cats-keywords 45 51)
-                :acknowledgments [:cat52]
-                :all (gen-cats-keywords 1 57)})
-
 (defn sections-ui []
   (let [secs ["All" "Abstract" "Intro" "Review" "Methods" "Results" "Discussion" "Conclusion" "Acknowledgments"]]
     (fn []
@@ -244,12 +243,11 @@
    [:div.columns.bg-gray
     [:div.column.col-12
      [:div#footer-p.text-gray.text-center
-      [:p "This work was based on the freely available PDF
-      titled “English for Writing Research - Papers Useful Phrases” which can be
-      found "
-       [:span [:a {:href "http://www.springer.com/gb/book/9783319260921"} "here."]]
-       [:p "This work was done with the kind permission of Springer Nature and
-      Adrian Wallwork."]]]]]
+      [:span "This work was based on the freely available PDF titled “English for
+      Writing Research - Papers Useful Phrases” which can be found "]
+      [:span [:a {:href "http://www.springer.com/gb/book/9783319260921"} "here."]]
+      [:br]
+      [:span "This work was done with the kind permission of Springer Nature and Adrian Wallwork."]]]]
 
    [:div.columns.bg-gray
     [:div.column.col-12.text-center
@@ -274,8 +272,3 @@
 (reagent/render-component [sections-ui]
                           (. js/document (getElementById "main-body")))
 
-(defn on-js-reload []
-  ;; optionally touch your app-state to force rerendering depending on
-  ;; your application
-  ;; (swap! app-state update-in [:__figwheel_counter] inc)
-  )
