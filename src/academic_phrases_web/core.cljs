@@ -24,7 +24,7 @@
 (defn gen-options-group [idx choices]
   ^{:key (str idx)}
   [:select {:on-change #(swap! app-state assoc-in [(keyword (str "choice" (str (inc idx))))] (-> % .-target .-value))}
-   (cons ^{:key (str idx c)} [:option "__"] (mapv (fn [c] ^{:key c} [:option c]) choices))])
+   (cons ^{:key (str idx)} [:option "__"] (mapv (fn [c] ^{:key c} [:option c]) choices))])
 
 (def secs-cats {:abstract [:cat1 :cat2 :cat4 :cat5]
                 :intro (gen-cats-keywords 1 16)
@@ -117,14 +117,17 @@
 
 (defn sent-ui []
   [:div.animated.fadeIn.text-center
-   (dyn-sent (:sentence-id @app-state))
-   [:div.empty
-    [:h4.animated.fadeIn {:id "copy-this"
-                          :style {:visibility (if (empty? (:choice1 @app-state)) "hidden" "visible")}}
-     (replace-placeholder)]
-    [:div.empty-action
-     [clipboard-button "Copy" "#copy-this"]]]
-   [:div.divider]])
+   [:div.card
+    [:div.card-header [:div.chip.secondary "Pick your words"] [:span "👇"]]
+    [:div.card-body
+     (dyn-sent (:sentence-id @app-state))]]
+   [:div.card
+    [:div.empty
+     [:h4.animated.fadeIn {:id "copy-this"
+                           :style {:visibility (if (empty? (:choice1 @app-state)) "hidden" "visible")}}
+      (replace-placeholder)]
+     [:div.empty-action
+      [clipboard-button "Copy" "#copy-this"]]]]])
 
 (defn mark-placeholders [sent]
   (let [split-sent (s/split sent #"__")
@@ -203,8 +206,7 @@
   [:div.columns
    [:div.column.col-12
     [:h2#site-header.text-center "Academic Phrases"]
-    [:h6.text-center.text-gray "Bypass that mental block when writing your papers"]
-    [:div.divider]]])
+    [:div.divider.text-center {:data-content "Bypass that mental block when writing your papers"}]]])
 
 (defn breadcrumb-ui []
   [:div.columns
