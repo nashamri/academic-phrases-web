@@ -5,10 +5,6 @@
             [cljsjs.clipboard]
             [com.rpl.specter :as S :refer-macros [select select-one ALL MAP-VALS collect]]))
 
-
-(enable-console-print!)
-
-
 (defonce app-state (reagent/atom {:template ""
                                   :choice1 ""
                                   :choice2 ""
@@ -49,16 +45,6 @@
 
 (defn get-items-by-ids [ids]
   (mapv get-item-by-id ids))
-
-(defn get-ids-by-cats [cats]
-  (S/select [(S/submap cats) S/ALL S/ALL :items S/ALL :id] all-phrases))
-
-(defn get-all-titles []
-  (S/select [S/MAP-VALS :title] all-phrases))
-
-(defn get-topic-title [topic-id]
-  (let [cat (keyword (str "cat" topic-id))]
-    (S/select-one [cat :title] all-phrases)))
 
 (defn get-topic-title-by-cat [cat]
   (S/select-one [cat :title] all-phrases))
