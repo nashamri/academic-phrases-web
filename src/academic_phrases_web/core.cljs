@@ -123,7 +123,8 @@
                           :style {:visibility (if (empty? (:choice1 @app-state)) "hidden" "visible")}}
      (replace-placeholder)]
     [:div.empty-action
-     [clipboard-button "Copy" "#copy-this"]]]])
+     [clipboard-button "Copy" "#copy-this"]]]
+   [:div.divider]])
 
 (defn mark-placeholders [sent]
   (let [split-sent (s/split sent #"__")
@@ -213,7 +214,7 @@
                                                                          (swap! app-state assoc :section "")
                                                                          (swap! app-state assoc :topic-title "")
                                                                          (mount-component sections-ui))
-                                                            :data-tooltip "Browse phrases by the paper sections"} "Section"]]
+                                                            :data-tooltip "Browse phrases by the paper sections"} "🎓 Section"]]
      (when (not= (:section @app-state) "")
        [:li.breadcrumb-item.c-hand [:a {:on-click #(do
                                                      (swap! app-state assoc :topic-title "")
@@ -221,7 +222,7 @@
                                     (s/capitalize (name (:section @app-state)))]])
      (when (not= (:topic-title @app-state) "")
        [:li.breadcrumb-item.c-hand [:a {:on-click #(mount-component topic-ui)} (:topic-title @app-state)]])]
-    [:div.divider.text-center {:data-content "🎓"}]]])
+    [:div.divider]]])
 
 (defn footer-ui []
   [:div
