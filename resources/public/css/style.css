@@ -1,2 +1,24 @@
-/* some style */
+select {
+    -webkit-appearance: button;
+    -webkit-user-select: none;
+    -moz-appearance: button;
+    -moz-user-select: none;
+    border: none;
+    color: #555;
+    background-color: #ffe9b3;
+    font-size: inherit;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    /* width: 150px; */
+}
+#site-header {
+    margin-bottom: 0.1em;
+    margin-top: 0.1em;
+}
+#footer-p {
+    font-size: 0.8em;
+    padding-top: 1rem;
+}
 
