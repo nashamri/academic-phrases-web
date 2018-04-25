@@ -18,12 +18,6 @@
                                   :topic-title ""
                                   :section ""}))
 
-(def uniqkey (atom 0))
-
-(defn gen-key []
-  (let [res (swap! uniqkey inc)]
-    res))
-
 (defn gen-cats-keywords [s e]
   (into [] (map #(keyword (str "cat" %)) (range s e))))
 
