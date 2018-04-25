@@ -30,11 +30,7 @@
 (defn gen-options-group [idx choices]
   ^{:key (str idx)}
   [:select {:on-change #(swap! app-state assoc-in [(keyword (str "choice" (str (inc idx))))] (-> % .-target .-value))}
-   [:option "__"]
-   (for [choice choices]
-     ^{:key (str choice idx (gen-key))}
-     [:option choice]
-     )])
+   (cons ^{:key (str idx c)} [:option "__"] (mapv (fn [c] ^{:key c} [:option c]) choices))])
 
 (def secs-cats {:abstract [:cat1 :cat2 :cat4 :cat5]
                 :intro (gen-cats-keywords 1 16)
@@ -137,10 +133,10 @@
 
 (defn mark-placeholders [sent]
   (let [split-sent (s/split sent #"__")
-        inter-sent (interpose ^{:key (str sent (gen-key))} [:mark "__"] split-sent)]
+        inter-sent (interpose [:mark "__"] split-sent)]
     (if (= (count split-sent) 1)
-      (cons inter-sent [[:mark "__"]])
-      inter-sent)))
+      (into [:div] (cons inter-sent [[:mark "__"]]))
+      (into [:div] inter-sent))))
 
 (defn sent-card [sent]
   ^{:key (str "sent-card-" sent)}
