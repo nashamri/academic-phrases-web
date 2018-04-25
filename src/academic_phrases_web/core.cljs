@@ -178,13 +178,15 @@
                      (mount-component topic-ui))} [:i.icon.icon-forward]]]]]])
 
 (defn topics-ui []
-  [:div.animated.fadeIn
-   [:input {:placeholder "Search" :class "form-input" :type "text"
-            :on-change (fn [e] (swap! app-state assoc :topics
-                                      (into [] (filter (fn [t]
-                                                         (s/includes? (s/lower-case t) (-> e .-target .-value s/lower-case)))
-                                                       (get-topics-titles-by-cats ((:section @app-state) secs-cats))))))}]
-   [:div (map (fn [t] ^{:key t}[topic-card t]) (:topics @app-state))]])
+  [:div.columns.animated.fadeIn
+   [:div.column.col-10.col-mx-auto
+    [:input.text-center {:placeholder "Search" :class "form-input" :type "text"
+                         :on-change (fn [e] (swap! app-state assoc :topics
+                                                   (into [] (filter (fn [t]
+                                                                      (s/includes? (s/lower-case t) (-> e .-target .-value s/lower-case)))
+                                                                    (get-topics-titles-by-cats ((:section @app-state) secs-cats))))))}]]
+   [:div.column.col-12
+    [:div (map (fn [t] ^{:key t}[topic-card t]) (:topics @app-state))]]])
 
 (defn sections-ui []
   (let [secs ["All" "Abstract" "Intro" "Review" "Methods" "Results" "Discussion" "Conclusion" "Acknowledgments"]]
