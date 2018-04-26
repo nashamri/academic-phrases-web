@@ -199,7 +199,7 @@
               [:i.icon.icon-forward]]]])]]])))
 
 (defn header-ui []
-  [:div.columns
+  [:div.columns.animated.fadeIn
    [:div.column.col-12
     [:h2#site-header.text-center "Academic Phrases"]
     [:div.divider.text-center {:data-content "Bypass that mental block when writing your papers"}]]])
@@ -214,12 +214,12 @@
                                                                          (mount-component sections-ui))
                                                             :data-tooltip "Browse phrases by the paper sections"} "🎓 Section"]]
      (when (not= (:section @app-state) "")
-       [:li.breadcrumb-item.c-hand [:a {:on-click #(do
-                                                     (swap! app-state assoc :topic-title "")
-                                                     (mount-component topics-ui))}
-                                    (s/capitalize (name (:section @app-state)))]])
+       [:li.breadcrumb-item.c-hand.animated.fadeInLeft [:a {:on-click #(do
+                                                                         (swap! app-state assoc :topic-title "")
+                                                                         (mount-component topics-ui))}
+                                                        (s/capitalize (name (:section @app-state)))]])
      (when (not= (:topic-title @app-state) "")
-       [:li.breadcrumb-item.c-hand [:a {:on-click #(mount-component topic-ui)} (:topic-title @app-state)]])]
+       [:li.breadcrumb-item.c-hand.animated.fadeInLeft [:a {:on-click #(mount-component topic-ui)} (:topic-title @app-state)]])]
     [:div.divider]]])
 
 (defn footer-ui []
