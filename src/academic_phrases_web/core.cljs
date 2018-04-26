@@ -29,7 +29,7 @@
                 :results (gen-cats-keywords 29 40)
                 :discussion (gen-cats-keywords 35 45)
                 :conclusion (gen-cats-keywords 45 51)
-                :acknowledgments [:cat52]
+                :acknowledgements [:cat52]
                 :all (gen-cats-keywords 1 57)})
 
 (defn replace-placeholder []
@@ -177,7 +177,7 @@
             [:div.card [:div.card-body [:h4.text-center "No Results! 😑"]]])]]])
 
 (defn sections-ui []
-  (let [secs ["All" "Abstract" "Intro" "Review" "Methods" "Results" "Discussion" "Conclusion" "Acknowledgments"]]
+  (let [secs ["All" "Abstract" "Intro" "Review" "Methods" "Results" "Discussion" "Conclusion" "Acknowledgements"]]
     (fn []
       [:div.animated.fadeIn
        [:table.table.table-hover
