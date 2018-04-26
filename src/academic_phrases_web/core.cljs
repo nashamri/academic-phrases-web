@@ -124,19 +124,17 @@
 
 (defn sent-card [sent]
   ^{:key (str "sent-card-" sent)}
-  [:tr.c-hand {:on-click #(do
-                            (swap! app-state assoc :sentence-id (:id sent))
-                            (swap! app-state assoc :template (:template sent))
-                            (reset-choices)
-                            (mount-component sent-ui))}
-   [:td (mark-placeholders (s/replace (:template sent) #"\[\{1\}\]|\[\{2\}\]|\[\{3\}\]" "__"))]
-   [:td
-    [:button.btn.btn-primary.float-right
-     {:on-click #(do
-                   (swap! app-state assoc :sentence-id (:id sent))
-                   (swap! app-state assoc :template (:template sent))
-                   (reset-choices)
-                   (mount-component sent-ui))} [:i.icon.icon-forward]]]])
+  (let [click-fun #(do
+                     (swap! app-state assoc :sentence-id (:id sent))
+                     (swap! app-state assoc :template (:template sent))
+                     (reset-choices)
+                     (mount-component sent-ui))]
+    (fn [sent]
+      [:tr.c-hand {:on-click click-fun}
+       [:td (mark-placeholders (s/replace (:template sent) #"\[\{1\}\]|\[\{2\}\]|\[\{3\}\]" "__"))]
+       [:td
+        [:button.btn.btn-primary.float-right
+         {:on-click click-fun} [:i.icon.icon-forward]]]])))
 
 (defn topic-ui []
   (let [title (:topic-title @app-state)]
@@ -146,22 +144,22 @@
         [:tbody
          (map
           (fn [t]
-            (sent-card t))
+            ^{:key (str t)}[sent-card t])
           (get-items-by-title title))]]])))
 
 (defn topic-card [topic]
   ^{:key (:topic-title topic)}
-  [:table.table.table-hover
-   [:tbody
-    [:tr.c-hand {:on-click #(do
-                              (swap! app-state assoc :topic-title topic)
-                              (mount-component topic-ui))}
-     [:td [:strong topic]]
-     [:td
-      [:button.btn.btn-primary.float-right
-       {:on-click #(do
+  (let [click-fun #(do
                      (swap! app-state assoc :topic-title topic)
-                     (mount-component topic-ui))} [:i.icon.icon-forward]]]]]])
+                     (mount-component topic-ui))]
+    (fn [topic]
+      [:table.table.table-hover
+       [:tbody
+        [:tr.c-hand {:on-click click-fun}
+         [:td [:strong topic]]
+         [:td
+          [:button.btn.btn-primary.float-right
+           {:on-click click-fun} [:i.icon.icon-forward]]]]]])))
 
 (defn topics-ui []
   [:div.columns.animated.fadeIn
