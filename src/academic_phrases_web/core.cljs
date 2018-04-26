@@ -188,7 +188,13 @@
                                (update-topics! (get-topics-titles-by-cats ((:section @app-state) secs-cats)))
                                (mount-component topics-ui))}
              [:strong sec]]
-            [:td [:button.btn.btn-primary.float-right [:i.icon.icon-forward]]]])]]])))
+            [:td
+             [:button.btn.btn-primary.float-right
+              {:on-click #(do
+                            (swap! app-state assoc :section (keyword (s/lower-case sec)))
+                            (update-topics! (get-topics-titles-by-cats ((:section @app-state) secs-cats)))
+                            (mount-component topics-ui))}
+              [:i.icon.icon-forward]]]])]]])))
 
 (defn header-ui []
   [:div.columns
