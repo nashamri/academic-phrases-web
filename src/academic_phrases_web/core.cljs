@@ -235,8 +235,9 @@
 
    [:div.columns.bg-gray
     [:div.column.col-12.text-center
-     [:img.centered.circle {:src "./img/avatar.jpg" :width "34px"}]
+     [:div [:sub.text-gray "Made by: Nasser Alshammari"]]
      [:a.btn.btn-link {:href "https://twitter.com/nashamri"} "Twitter"]
+     [:img.avatar.avatar-xm {:src "./img/avatar.jpg" :width "34px"}]
      [:a.btn.btn-link {:href "https://github.com/nashamri/academic-phrases-web"} "GitHub"]]]])
 
 (defn main-ui []
