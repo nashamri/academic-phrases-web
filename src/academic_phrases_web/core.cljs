@@ -172,7 +172,9 @@
                                                                       (s/includes? (s/lower-case t) (-> e .-target .-value s/lower-case)))
                                                                     (get-topics-titles-by-cats ((:section @app-state) secs-cats))))))}]]
    [:div.column.col-12
-    [:div (map (fn [t] ^{:key t}[topic-card t]) (:topics @app-state))]]])
+    [:div (if (not= (:topics @app-state) [])
+            (map (fn [t] ^{:key t}[topic-card t]) (:topics @app-state))
+            [:div.card [:div.card-body [:h4.text-center "No Results! 😑"]]])]]])
 
 (defn sections-ui []
   (let [secs ["All" "Abstract" "Intro" "Review" "Methods" "Results" "Discussion" "Conclusion" "Acknowledgments"]]
