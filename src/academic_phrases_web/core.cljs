@@ -15,7 +15,7 @@
                                   :section ""}))
 
 (defn gen-cats-keywords [s e]
-  (into [] (map #(keyword (str "cat" %)) (range s e))))
+  (into [] (map #(keyword (str "cat" %)) (range s (inc e)))))
 
 (defn gen-options-group [idx choices]
   ^{:key (str idx)}
