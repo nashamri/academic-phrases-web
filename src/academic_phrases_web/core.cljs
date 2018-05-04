@@ -3,7 +3,7 @@
             [reagent.core :as reagent]
             [clojure.string :as s]
             [cljsjs.clipboard]
-            [com.rpl.specter :as S :refer-macros [select select-one ALL MAP-VALS collect]]))
+            [com.rpl.specter :as S]))
 
 (defonce app-state (reagent/atom {:template ""
                                   :choice1 ""
