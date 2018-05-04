@@ -32,6 +32,16 @@ To create a production build run:
 And open your browser in `resources/public/index.html`. You will not
 get live reloading, nor a REPL. 
 
+## Testing
+
+To run the tests and watch for changes:
+
+    lein doo phantom test
+
+To run the tests once:
+
+    lein doo phantom test once
+
 ## License
 
 Copyright © 2014 FIXME

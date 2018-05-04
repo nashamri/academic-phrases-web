@@ -16,13 +16,14 @@
                  [cljsjs/clipboard "1.6.1-1"]]
 
   :plugins [[lein-figwheel "0.5.15"]
+            [lein-doo "0.1.10"]
             [lein-cljsbuild "1.1.7" :exclusions [[org.clojure/clojure]]]]
 
   :source-paths ["src"]
 
   :cljsbuild {:builds
               [{:id "dev"
-                :source-paths ["src"]
+                :source-paths ["src" "test"]
 
                 ;; The presence of a :figwheel configuration here
                 ;; will cause figwheel to inject the figwheel client
@@ -45,6 +46,11 @@
                ;; This next build is a compressed minified build for
                ;; production. You can build this with:
                ;; lein cljsbuild once min
+               {:id "test"
+                :source-paths ["src" "test"]
+                :compiler {:main academic-phrases-web.test-runner
+                           :output-to "resources/public/js/compiled/academic_phrases_web_test.js"
+                           :optimizations :none}}
                {:id "min"
                 :source-paths ["src"]
                 :compiler {:output-to "resources/public/js/compiled/academic_phrases_web.js"
