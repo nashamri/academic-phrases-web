@@ -13,13 +13,12 @@
           :template "X is the [{1}] cause of ..."
           :choices [["main" "leading" "primary" "major"]]})))
 
-(deftest get-items-by-ids1-test
+(deftest get-items-by-ids-test
   (is (= (c/get-items-by-ids [1])
          [{:id 1
            :template "X is the [{1}] cause of ..."
-           :choices [["main" "leading" "primary" "major"]]}])))
+           :choices [["main" "leading" "primary" "major"]]}]))
 
-(deftest get-items-by-ids2-test
   (is (= (c/get-items-by-ids [1 2])
          [{:id 1
            :template "X is the [{1}] cause of ..."
@@ -32,11 +31,10 @@
   (is (= (c/get-topic-title-by-cat :cat1)
          "Establishing why your topic X is important")))
 
-(deftest get-topics-titles-by-cats1-test
+(deftest get-topics-titles-by-cats-test
   (is (= (c/get-topics-titles-by-cats [:cat1])
-         ["Establishing why your topic X is important"])))
+         ["Establishing why your topic X is important"]))
 
-(deftest get-topics-titles-by-cats2-test
   (is (= (c/get-topics-titles-by-cats [:cat1 :cat2])
          ["Establishing why your topic X is important"
           "Outlining the past-present history of the study of X"])))
@@ -56,10 +54,9 @@
           {:id 11 :template "The [{1}] characteristics of X are:" :choices [["main" "principal" "fundamental"]]}
           {:id 12 :template "X [{1}] for" :choices [["accounts" "is responsible"]]}])))
 
-(deftest mark-placeholders1-test
+(deftest mark-placeholders-test
   (is (= (c/mark-placeholders "X is the __ cause of ...")
-         [:div "X is the " [:mark "__"] " cause of ..."])))
+         [:div "X is the " [:mark "__"] " cause of ..."]))
 
-(deftest mark-placeholders2-test
   (is (= (c/mark-placeholders "This sentence has one __ two __ three __ options")
          [:div "This sentence has one " [:mark "__"] " two " [:mark "__"] " three " [:mark "__"] " options"])))
