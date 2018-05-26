@@ -1,10 +1,13 @@
+![GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)
+
 # academic-phrases-web
 
-FIXME: Write a one-line description of your library/project.
+This is a little web interface for my Emacs package [academic-phrases](https://github.com/nashamri/academic-phrases) (You can install the package from [MELPA](https://melpa.org/#/academic-phrases)).
 
-## Overview
 
-FIXME: Write a paragraph about the library/project and highlight its goals.
+## Live version
+A live copy of this repo is available on my site. You can access it [Here](https://nasser.space/ap)
+
 
 ## Setup
 
@@ -44,6 +47,6 @@ To run the tests once:
 
 ## License
 
-Copyright © 2014 FIXME
+Copyright © 2018 Nasser Alshammari
 
-Distributed under the Eclipse Public License either version 1.0 or (at your option) any later version.
+Distributed under the GNU General Public License, version 2.
