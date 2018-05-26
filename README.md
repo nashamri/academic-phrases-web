@@ -2,11 +2,14 @@
 
 # academic-phrases-web
 
-This is a little web interface for my Emacs package [academic-phrases](https://github.com/nashamri/academic-phrases) (You can install the package from [MELPA](https://melpa.org/#/academic-phrases)).
+This is a little web interface for my Emacs package
+[academic-phrases](https://github.com/nashamri/academic-phrases) (You can
+install the package from [MELPA](https://melpa.org/#/academic-phrases)).
 
 
 ## Live version
-A live copy of this repo is available on my site. You can access it [Here](https://nasser.space/ap)
+A live copy of this repo is available on my site. You can access it
+[Here](https://nasser.space/ap).
 
 
 ## Setup
