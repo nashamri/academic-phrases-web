@@ -1,8 +1,8 @@
 (defproject academic-phrases-web "0.1.0-SNAPSHOT"
-  :description "FIXME: write this!"
-  :url "http://example.com/FIXME"
-  :license {:name "Eclipse Public License"
-            :url "http://www.eclipse.org/legal/epl-v10.html"}
+  :description "This is a little web interface for my Emacs package academic-phrases."
+  :url "https://nasser.space/ap"
+  :license {:name "GNU General Public License, version 2"
+            :url "https://www.gnu.org/licenses/gpl-2.0"}
 
 
 
